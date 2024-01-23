@@ -1,0 +1,10 @@
+D:\Google Drive 6TB\Projects\R2-DTF\r2-dtf\Code\GUI\R2-D2F GUI\R2-D2F GUI\bin\Debug\R2-D2F GUI.exe.config
+D:\Google Drive 6TB\Projects\R2-DTF\r2-dtf\Code\GUI\R2-D2F GUI\R2-D2F GUI\bin\Debug\R2-D2F GUI.exe
+D:\Google Drive 6TB\Projects\R2-DTF\r2-dtf\Code\GUI\R2-D2F GUI\R2-D2F GUI\bin\Debug\R2-D2F GUI.pdb
+D:\Google Drive 6TB\Projects\R2-DTF\r2-dtf\Code\GUI\R2-D2F GUI\R2-D2F GUI\obj\Debug\R2-D2F GUI.csproj.AssemblyReference.cache
+D:\Google Drive 6TB\Projects\R2-DTF\r2-dtf\Code\GUI\R2-D2F GUI\R2-D2F GUI\obj\Debug\R2_D2F_GUI.Form1.resources
+D:\Google Drive 6TB\Projects\R2-DTF\r2-dtf\Code\GUI\R2-D2F GUI\R2-D2F GUI\obj\Debug\R2_D2F_GUI.Properties.Resources.resources
+D:\Google Drive 6TB\Projects\R2-DTF\r2-dtf\Code\GUI\R2-D2F GUI\R2-D2F GUI\obj\Debug\R2-D2F GUI.csproj.GenerateResource.cache
+D:\Google Drive 6TB\Projects\R2-DTF\r2-dtf\Code\GUI\R2-D2F GUI\R2-D2F GUI\obj\Debug\R2-D2F GUI.csproj.CoreCompileInputs.cache
+D:\Google Drive 6TB\Projects\R2-DTF\r2-dtf\Code\GUI\R2-D2F GUI\R2-D2F GUI\obj\Debug\R2-D2F GUI.exe
+D:\Google Drive 6TB\Projects\R2-DTF\r2-dtf\Code\GUI\R2-D2F GUI\R2-D2F GUI\obj\Debug\R2-D2F GUI.pdb
