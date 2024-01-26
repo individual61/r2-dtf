@@ -19,22 +19,22 @@ Dialog::Dialog(QWidget *parent)
     arduino = new QSerialPort;
     serialBuffer = "";
 
-   /* qDebug() << "Number of available ports: " << QSerialPortInfo::availablePorts().length();
+    qDebug() << "Number of available ports: " << QSerialPortInfo::availablePorts().length();
     foreach(const QSerialPortInfo &serialPortInfo, QSerialPortInfo::availablePorts())
     {
-        qDebug() << "Has VID: " << serialPortInfo.hasVendorIdentifier();
+        //qDebug() << "Has VID: " << serialPortInfo.hasVendorIdentifier();
         if(serialPortInfo.hasVendorIdentifier())
         {
             qDebug() << "VID: " << serialPortInfo.vendorIdentifier();
         }
 
-        qDebug() << "Has PID: " << serialPortInfo.hasProductIdentifier();
+        //qDebug() << "Has PID: " << serialPortInfo.hasProductIdentifier();
         if(serialPortInfo.hasProductIdentifier())
         {
             qDebug() << "PID: " << serialPortInfo.productIdentifier();
         }
     }
-*/
+
 
     foreach(const QSerialPortInfo &serialPortInfo, QSerialPortInfo::availablePorts())
     {
@@ -42,7 +42,7 @@ Dialog::Dialog(QWidget *parent)
         {
             if(serialPortInfo.vendorIdentifier() == arduino_nano_33_vid)
             {
-                 if(serialPortInfo.productIdentifier() == arduino_nano_33_pid)
+                if(serialPortInfo.productIdentifier() == arduino_nano_33_pid)
                 {
                     arduino_port_name = serialPortInfo.portName();
                     arduino_is_available = true;
@@ -62,6 +62,8 @@ Dialog::Dialog(QWidget *parent)
         arduino->setStopBits(QSerialPort::OneStop);
         QObject::connect(arduino, SIGNAL(readyRead()), this, SLOT(readSerial()));
 
+        qDebug() << "Arduino connected on port " << arduino_port_name;
+
     }
     else
     {
@@ -76,18 +78,215 @@ Dialog::~Dialog()
     if(arduino->isOpen())
     {
         arduino->close();
+        qDebug() << "Closed Arduino serial connection.";
     }
     delete ui;
 }
 
-void Dialog::readSerial()
+/*void Dialog::readSerial()
 {
     // qDebug() << "in readSerial()";
     serialData = arduino->readAll();
     serialBuffer += QString::fromStdString(serialData.toStdString());
     qDebug() << serialBuffer;
+}*/
 
+//QByteArray serialBuffer; // Use a QByteArray for binary data accumulation
+
+
+void Dialog::readSerial() {
+    qDebug() << "In readSerial()";
+
+    const int SERIAL_MESSAGE_BUFFER_SIZE = 16; // this should not be used here
+    const byte SERIAL_HEADER = 0x3E; // decimal 62 '>'
+    const byte SERIAL_PAD = 0x5F;    // decimal 95 '_'
+    const int SERIAL_SEND_BUFFER_SIZE = (2 * SERIAL_MESSAGE_BUFFER_SIZE + 2);
+
+    serialBuffer = arduino->readAll();
+    serialBuffer += serialBuffer; // Accumulate binary data in serialBuffer
+    qDebug() << "serialbuffer size: " << serialBuffer.length();
+    qDebug() << "serialbuffer: " << serialBuffer.toHex(':');
+
+
+
+    bool serial_buffer_long_enough = false;
+
+    int while_loop_count = 0;
+
+    // Make sure it is even worth looking at the serialBuffer
+    while (serialBuffer.length() >= SERIAL_SEND_BUFFER_SIZE)
+    {
+        while_loop_count++;
+        qDebug() << "Entering while loop to process serialBuffer. Iteration number " << while_loop_count;
+        qDebug() << "serialbuffer is long enough.";
+        int newlineIndex = serialBuffer.indexOf((char)SERIAL_HEADER);
+        if ( (newlineIndex >= 0) && (serialBuffer[newlineIndex+1]== (char)SERIAL_HEADER) )
+        {
+            qDebug() << "First two header chars found, first at newlineIndex " << newlineIndex << ". They are " << (char) serialBuffer[newlineIndex] << " and " << (char) serialBuffer[newlineIndex+1] << " and match " << (char) SERIAL_HEADER;
+
+            if (newlineIndex + SERIAL_SEND_BUFFER_SIZE <= serialBuffer.size())
+            {
+                qDebug() << "serialBuffer is at least long enough to hold a message starting at newline index.";
+                qDebug() << "Removing message from serialBuffer. Old length: " << serialBuffer.size();
+                QByteArray message = serialBuffer.mid(newlineIndex, SERIAL_SEND_BUFFER_SIZE); // Extract message as QByteArray
+                qDebug() << "Message length: " << message.length();
+                qDebug() << "Message: " << message.toHex(':');
+
+                serialBuffer.remove(0, newlineIndex + SERIAL_SEND_BUFFER_SIZE); // Remove processed message from buffer
+                qDebug() << "New serialBuffer length: " << serialBuffer.size();
+
+                // Ensure that the message starts with the header
+                if (message[0] == (char)SERIAL_HEADER && message[1] == (char)SERIAL_HEADER)
+                {
+                    qDebug() << "Again we have confirmed that the extracted message starts with the header.";
+                    // Unpack the boolean values
+                    byte boolsPacked1 = message[2];
+                    bool status_motor1_ina = boolsPacked1 & 1;
+                    bool status_motor1_inb = boolsPacked1 & 2;
+                    bool status_motor1_endiag = boolsPacked1 & 4;
+                    bool status_motor2_ina = boolsPacked1 & 8;
+                    bool status_motor2_inb = boolsPacked1 & 16;
+                    bool status_motor2_endiag = boolsPacked1 & 32;
+                    bool status_flag_1 = boolsPacked1 & 64;
+                    bool status_flag_2 = boolsPacked1 & 128;
+
+                    byte boolsPacked2 = message[4];
+                    bool status_txu_oe = boolsPacked2 & 1;
+                    bool status_d3 = boolsPacked2 & 2;
+                    bool status_d11 = boolsPacked2 & 4;
+                    bool status_d13 = boolsPacked2 & 8;
+                    bool status_rgb_led_r = boolsPacked2 & 16;
+                    bool status_rgb_led_g = boolsPacked2 & 32;
+                    bool status_rgb_led_b = boolsPacked2 & 64;
+                    bool status_flag_3 = boolsPacked2 & 128;
+
+                    // Unpack the uint8_t values
+                    uint8_t status_motor1_pwm, status_motor1_cs;
+                    uint8_t status_motor2_pwm, status_motor2_cs;
+                    uint8_t status_m1_enc_count, status_m1_rot_rate;
+                    uint8_t status_m2_enc_count, status_m2_rot_rate;
+                    int8_t status_acc_x, status_acc_y, status_acc_z;
+                    int8_t status_ang_rate_x, status_ang_rate_y, status_ang_rate_z;
+
+                    memcpy(&status_motor1_pwm, message.constData() + 6, sizeof(uint8_t));
+                    memcpy(&status_motor1_cs, message.constData() + 8, sizeof(uint8_t));
+                    memcpy(&status_motor2_pwm, message.constData() + 10, sizeof(uint8_t));
+                    memcpy(&status_motor2_cs, message.constData() + 12, sizeof(uint8_t));
+                    memcpy(&status_m1_enc_count, message.constData() + 14, sizeof(uint8_t));
+                    memcpy(&status_m1_rot_rate, message.constData() + 16, sizeof(uint8_t));
+                    memcpy(&status_m2_enc_count, message.constData() + 18, sizeof(uint8_t));
+                    memcpy(&status_m2_rot_rate, message.constData() + 20, sizeof(uint8_t));
+                    memcpy(&status_acc_x, message.constData() + 22, sizeof(int8_t));
+                    memcpy(&status_acc_y, message.constData() + 24, sizeof(int8_t));
+                    memcpy(&status_acc_z, message.constData() + 26, sizeof(int8_t));
+                    memcpy(&status_ang_rate_x, message.constData() + 28, sizeof(int8_t));
+                    memcpy(&status_ang_rate_y, message.constData() + 30, sizeof(int8_t));
+                    memcpy(&status_ang_rate_z, message.constData() + 32, sizeof(int8_t));
+
+                    // Print values for debugging (remove in the final code)
+                    qDebug() << "-----------------------------";
+                    qDebug() << "status_motor1_ina:\t\t\t" << status_motor1_ina;
+                    qDebug() << "status_motor1_inb:\t\t\t" << status_motor1_inb;
+                    qDebug() << "status_motor1_endiag:\t\t" << status_motor1_endiag;
+                    qDebug() << "status_motor2_ina:\t\t\t" << status_motor2_ina;
+                    qDebug() << "status_motor2_inb:\t\t\t" << status_motor2_inb;
+                    qDebug() << "status_motor2_endiag:\t\t" << status_motor2_endiag;
+                    qDebug() << "status_flag_1:\t\t\t" << status_flag_1;
+                    qDebug() << "status_flag_2:\t\t\t" << status_flag_2;
+                    qDebug() << "\t";
+                    qDebug() << "status_txu_oe:\t\t\t" << status_txu_oe;
+                    qDebug() << "status_d3:\t\t\t" << status_d3;
+                    qDebug() << "status_d11:\t\t\t" << status_d11;
+                    qDebug() << "status_d13:\t\t\t" << status_d13;
+                    qDebug() << "status_rgb_led_r:\t\t\t" << status_rgb_led_r;
+                    qDebug() << "status_rgb_led_g:\t\t\t" << status_rgb_led_g;
+                    qDebug() << "status_rgb_led_b:\t\t\t" << status_rgb_led_b;
+                    qDebug() << "status_flag_3:\t\t\t" << status_flag_3;
+                    qDebug() << "\t";
+                    qDebug() << "status_motor1_pwm:\t\t\t" << status_motor1_pwm;
+                    qDebug() << "status_motor1_cs:\t\t\t" << status_motor1_cs;
+                    qDebug() << "status_motor2_pwm:\t\t\t" << status_motor2_pwm;
+                    qDebug() << "status_motor2_cs:\t\t\t" << status_motor2_cs;
+                    qDebug() << "status_m1_enc_count:\t\t" << status_m1_enc_count;
+                    qDebug() << "status_m1_rot_rate:\t\t\t" << status_m1_rot_rate;
+                    qDebug() << "status_m2_enc_count:\t\t" << status_m2_enc_count;
+                    qDebug() << "status_m2_rot_rate:\t\t\t" << status_m2_rot_rate;
+                    qDebug() << "status_acc_x:\t\t\t" << status_acc_x;
+                    qDebug() << "status_acc_y:\t\t\t" << status_acc_y;
+                    qDebug() << "status_acc_z:\t\t\t" << status_acc_z;
+                    qDebug() << "status_ang_rate_x:\t\t\t" << status_ang_rate_x;
+                    qDebug() << "status_ang_rate_y:\t\t\t" << status_ang_rate_y;
+                    qDebug() << "status_ang_rate_z:\t\t\t" << status_ang_rate_z;
+                    qDebug() << "-----------------------------";
+                    qDebug() << "-----------------------------";
+                }
+            }
+            else
+            {
+                qDebug() << "serialBuffer was not long enough to hold a full message. Message size : " << SERIAL_SEND_BUFFER_SIZE << ", serialBuffer size: " << serialBuffer.size();
+                break;
+            }
+
+        }
+        else
+        {
+            qDebug() << "First two header chars not found.";
+        }
+    }
+    qDebug() << "---------------------End of serialRead()------------------";
+    qDebug() << "----------------------------------------------------------";
 }
+
+
+
+/*
+void Dialog::readSerial() {
+    QByteArray serialData = arduino->readAll();
+    serialBuffer.append(serialData); // Accumulate binary data in serialBuffer
+
+    // Process complete messages separated by '\n'
+    int newlineIndex;
+    while ((newlineIndex = serialBuffer.indexOf('\n')) >= 0) {
+        QByteArray message = serialBuffer.left(newlineIndex); // Extract message as QByteArray
+        qDebug() << message.toHex(); // Print the hexadecimal representation for debugging
+        serialBuffer.remove(0, newlineIndex + 1); // Remove processed message from buffer
+
+        if (message.size() >= 11) { // 1 byte for packed booleans + 4 bytes * 2 for ints + 4 bytes * 2 for floats
+            // Extract packed booleans
+            byte boolsPacked = message[0];
+            bool bool1 = boolsPacked & 1;  // Least significant bit
+            bool bool2 = boolsPacked & 2;  // Second least significant bit
+
+            // Extract ints and floats
+            int int1, int2;
+            float float1, float2;
+
+            memcpy(&int1, message.constData() + 1, sizeof(int));
+
+            // Reverse the byte order for the second int
+            memcpy(&int2, message.constData() + 5, sizeof(int));
+            int2 = qFromLittleEndian<int>(&int2);
+
+            // Reverse the byte order for the floats
+            memcpy(&float1, message.constData() + 9, sizeof(float));
+            float1 = qFromLittleEndian<float>(&float1);
+            memcpy(&float2, message.constData() + 13, sizeof(float));
+            float2 = qFromLittleEndian<float>(&float2);
+
+            // Print values
+            qDebug() << "Bool1:" << bool1 << "\tBool2:" << bool2
+                     << "\tInt1:" << int1 << "\tInt2:" << int2
+                     << "\tFloat1:" << float1 << "\tFloat2:" << float2;
+        }
+    }
+}
+*/
+
+
+
+
+
+
 
 void Dialog::handle_button_clicked(QString data)
 {

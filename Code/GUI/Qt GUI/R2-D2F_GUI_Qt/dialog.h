@@ -36,10 +36,12 @@ private:
     static const quint16 arduino_nano_33_vid = 9025;
     static const quint16 arduino_nano_33_pid = 32858;
 
-    QByteArray serialData;
-    QString serialBuffer;
+    QByteArray serialBuffer;
 
     QString arduino_port_name;
     bool arduino_is_available;
+
+    void reverseAndCopy(float* destination, const char* source);
+
 };
 #endif // DIALOG_H
