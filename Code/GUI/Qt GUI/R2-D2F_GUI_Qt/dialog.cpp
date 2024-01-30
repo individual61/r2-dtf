@@ -283,6 +283,11 @@ void Dialog::readSerial() {
                     statusText = status_rgb_led_b ? "On" : "Off";
                     ui->blueled_readvalue->setText(statusText.toUtf8().constData());
 
+                    // TXU
+                    statusText = status_txu_oe ? "On" : "Off";
+                    ui->txu_readvalue->setText(statusText.toUtf8().constData());
+
+
                     // M1 INA
                     ui->m1a_indicator->setChecked(status_motor1_ina);
                     statusText = status_motor1_ina ? "1" : "0";

@@ -2496,7 +2496,7 @@
       SBTSLgBAopB2AQAShbQLAJCo/w/mW0b/oXr80QAAAABJRU5ErkJggg==
     )
   )
-  (image (at 601.98 171.45) (scale 1.95862)
+  (image (at 113.03 240.03) (scale 0.700291)
     (uuid 3b0c1bcc-b8a4-4674-b9f5-eb3d7233317e)
     (data
       iVBORw0KGgoAAAANSUhEUgAABMMAAAOgCAIAAAC/TCYWAAAAA3NCSVQICAjb4U/gAAAACXBIWXMA
@@ -10166,7 +10166,7 @@
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 4610afdb-c736-4762-b70c-3f20c7d9aa31)
   )
-  (text "#define MOTOR_DRIVER_PIN_INA1 2     // M1INA	    Motor 1 direction input A\n#define MOTOR_DRIVER_PIN_INB1 4     // M1INB        Motor 1 direction input B\n#define MOTOR_DRIVER_PIN_PWM1 9     // M1PWM	    Motor 1 speed input\n#define MOTOR_DRIVER_PIN_EN1DIAG1 6 // M1EN/DIAG	Motor 1 enable input/fault output\n#define MOTOR_DRIVER_PIN_CS1 A0     // M1CS	        Motor 1 current sense output\n\n#define MOTOR_DRIVER_PIN_INA2 7      // M1INA	    Motor 2 direction input A\n#define MOTOR_DRIVER_PIN_INB2 8      // M1INB       Motor 2 direction input B\n#define MOTOR_DRIVER_PIN_PWM2 10     // M1PWM	    Motor 2 speed input\n#define MOTOR_DRIVER_PIN_EN2DIAG2 12 // M1EN/DIAG	Motor 2 enable input/fault output\n#define MOTOR_DRIVER_PIN_CS2 A1      // M1CS	    Motor 2 current sense output"
+  (text "#define MOTOR_DRIVER_PIN_INA1 2     // M1INA	    Motor 1 direction input A\n#define MOTOR_DRIVER_PIN_INB1 4     // M1INB        Motor 1 direction input B\n#define MOTOR_DRIVER_PIN_PWM1 9     // M1PWM	    Motor 1 speed input\n#define MOTOR_DRIVER_PIN_EN1DIAG1 6 // M1EN/DIAG	Motor 1 enable input/fault output\n#define MOTOR_DRIVER_PIN_CS1 A1     // M1CS	        Motor 1 current sense output\n\n#define MOTOR_DRIVER_PIN_INA2 7      // M1INA	    Motor 2 direction input A\n#define MOTOR_DRIVER_PIN_INB2 8      // M1INB       Motor 2 direction input B\n#define MOTOR_DRIVER_PIN_PWM2 10     // M1PWM	    Motor 2 speed input\n#define MOTOR_DRIVER_PIN_EN2DIAG2 12 // M1EN/DIAG	Motor 2 enable input/fault output\n#define MOTOR_DRIVER_PIN_CS2 A0      // M1CS	    Motor 2 current sense output"
     (at 78.74 219.71 0)
     (effects (font (size 1 1)) (justify left bottom))
     (uuid 58ade3da-9d98-4633-b309-87bce3455855)
@@ -10181,7 +10181,7 @@
     (uuid 7eeeaea9-c07b-4fdc-86ea-31953f2dec03)
   )
   (text "Female headers\n\n2- pos: (2) Current Sense Jumper\n\n4-pos: (1) Power test, (1) M1 Enc Test\n\n5-Pos: (1) M1 Test, (1) M2 Test, (1) M2 Enc Test, (2) Motor Driver Board support headers, (1) 5 V buck board\n\n13-Pos: (1) Motor Driver Board\n\n\nMale Headers\n\n6-pos: (2) Motor connectors"
-    (at 7.62 241.3 0)
+    (at -116.84 172.72 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 84504d4e-9399-47b8-9fcc-ab2d31c8b921)
   )
