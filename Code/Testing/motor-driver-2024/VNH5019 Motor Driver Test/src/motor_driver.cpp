@@ -28,9 +28,72 @@ void motor_driver_init(void)
     pwmPin2.write(0.0);
 }
 
+void motor_driver_setM1_INA(bool setting)
+{
+    digitalWrite(MOTOR_DRIVER_PIN_INA1, setting); // Make the motor coast no
+    status_motor1_ina = setting;
+}
+
+void motor_driver_setM1_INB(bool setting)
+{
+    digitalWrite(MOTOR_DRIVER_PIN_INB1, setting); // Make the motor coast no
+    status_motor1_inb = setting;
+}
+
+void motor_driver_setM2_INA(bool setting)
+{
+    digitalWrite(MOTOR_DRIVER_PIN_INA2, setting); // Make the motor coast no
+    status_motor2_ina = setting;
+}
+
+void motor_driver_setM2_INB(bool setting)
+{
+    digitalWrite(MOTOR_DRIVER_PIN_INB2, setting); // Make the motor coast no
+    status_motor2_inb = setting;
+}
+
+// Set PWM only, not INX
+void motor_driver_setM1_PWM(int speed)
+{
+    if (speed < 0)
+    {
+        speed = -speed; // Make speed a positive quantity
+    }
+
+    if (speed > 1000)
+    { // Max PWM dutycycle
+        speed = 1000;
+    }
+
+    status_motor1_pwm = speed;
+
+    pwmPin1.write(speed / 1000.0);
+}
+
+// Set PWM only, not INX
+void motor_driver_setM2_PWM(int speed)
+{
+    if (speed < 0)
+    {
+        speed = -speed; // Make speed a positive quantity
+    }
+
+    if (speed > 1000)
+    { // Max PWM dutycycle
+        speed = 1000;
+    }
+
+    status_motor2_pwm = speed;
+
+    pwmPin2.write(speed / 1000.0);
+}
+
+
+
 // Set speed for motor 1, speed is a number between /-1000/ and /1000/
 void motor_driver_setM1Speed(int speed)
 {
+
     unsigned char reverse = 0;
 
     if (speed < 0)
@@ -38,26 +101,40 @@ void motor_driver_setM1Speed(int speed)
         speed = -speed; // Make speed a positive quantity
         reverse = 1;    // Preserve the direction
     }
-    if (speed > 1000) // Max PWM dutycycle
+
+    if (speed > 1000)
+    { // Max PWM dutycycle
         speed = 1000;
+    }
+
+    status_motor1_pwm = speed;
 
     if (speed == 0)
     {
         digitalWrite(MOTOR_DRIVER_PIN_INA1, LOW); // Make the motor coast no
         digitalWrite(MOTOR_DRIVER_PIN_INB1, LOW); // matter which direction it is spinning.
+        status_motor1_ina = false;
+        status_motor1_inb = false;
     }
     else if (reverse)
     {
         digitalWrite(MOTOR_DRIVER_PIN_INA1, LOW);
         digitalWrite(MOTOR_DRIVER_PIN_INB1, HIGH);
+        status_motor1_ina = false;
+        status_motor1_inb = true;
     }
     else
     {
         digitalWrite(MOTOR_DRIVER_PIN_INA1, HIGH);
         digitalWrite(MOTOR_DRIVER_PIN_INB1, LOW);
+        status_motor1_ina = true;
+        status_motor1_inb = false;
     }
 
     pwmPin1.write(speed / 1000.0);
+    // Serial.print(speed);
+    // Serial.print("\t");
+    // Serial.println(speed / 1000.0);
 }
 
 // Set speed for motor 2, speed is a number between /-1000/ and /1000/
@@ -71,22 +148,32 @@ void motor_driver_setM2Speed(int speed)
         reverse = 1;    // Preserve the direction
     }
     if (speed > 1000) // Max PWM dutycycle
+    {
         speed = 1000;
+    }
+
+    status_motor2_pwm = speed;
 
     if (speed == 0)
     {
         digitalWrite(MOTOR_DRIVER_PIN_INA2, LOW); // Make the motor coast no
         digitalWrite(MOTOR_DRIVER_PIN_INB2, LOW); // matter which direction it is spinning.
+        status_motor2_ina = false;
+        status_motor2_inb = false;
     }
     else if (reverse)
     {
         digitalWrite(MOTOR_DRIVER_PIN_INA2, LOW);
         digitalWrite(MOTOR_DRIVER_PIN_INB2, HIGH);
+        status_motor2_ina = false;
+        status_motor2_inb = true;
     }
     else
     {
         digitalWrite(MOTOR_DRIVER_PIN_INA2, HIGH);
         digitalWrite(MOTOR_DRIVER_PIN_INB2, LOW);
+        status_motor2_ina = true;
+        status_motor2_inb = false;
     }
 
     pwmPin2.write(speed / 1000.0);
@@ -100,17 +187,25 @@ void motor_driver_setSpeeds(int m1Speed, int m2Speed)
 }
 
 // Brake motor 1, brake is a number between 0 and 1000
-void  motor_driver_setM1Brake(int brake)
+void motor_driver_setM1Brake(int brake)
 {
     // normalize brake
     if (brake < 0)
     {
         brake = -brake;
     }
+
     if (brake > 1000) // Max brake
+    {
         brake = 1000;
+    }
+
+    status_motor1_pwm = brake;
+
     digitalWrite(MOTOR_DRIVER_PIN_INA1, LOW);
     digitalWrite(MOTOR_DRIVER_PIN_INB1, LOW);
+    status_motor2_ina = false;
+    status_motor2_inb = false;
 
     pwmPin1.write(brake / 1000.0);
 }
@@ -123,10 +218,18 @@ void motor_driver_setM2Brake(int brake)
     {
         brake = -brake;
     }
+
     if (brake > 1000) // Max brake
+    {
         brake = 1000;
+    }
+
+    status_motor2_pwm = brake;
+
     digitalWrite(MOTOR_DRIVER_PIN_INA2, LOW);
     digitalWrite(MOTOR_DRIVER_PIN_INB2, LOW);
+    status_motor2_ina = false;
+    status_motor2_inb = false;
 
     pwmPin2.write(brake / 1000.0);
 }

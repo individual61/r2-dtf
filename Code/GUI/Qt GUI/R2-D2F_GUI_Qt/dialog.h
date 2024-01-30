@@ -20,13 +20,38 @@ public:
     ~Dialog();
 
 private slots:
+
+    void m1a_setbutton_clicked();
+    void m1b_setbutton_clicked();
+    void m2a_setbutton_clicked();
+    void m2b_setbutton_clicked();
+
+    void m1pwm_setbutton_clicked();
+    void m2pwm_setbutton_clicked();
+
+    void m1drive_setbutton_clicked();
+    void m2drive_setbutton_clicked();
+
+    void m1brake_setbutton_clicked();
+    void m2brake_setbutton_clicked();
+
+    void stopall_setbutton_clicked();
+
+    void unknowncommand_setbutton_clicked();
+
+    void redled_setbutton_clicked();
+    void greenled_setbutton_clicked();
+    void blueled_setbutton_clicked();
+
+
+
+
+
     void handle_button_clicked(QString data);
 
-    void on_buttonA_clicked();
-
-    void on_buttonB_clicked();
-
-    void on_buttonC_clicked();
+    void buttonA_clicked();
+    void buttonB_clicked();
+    void buttonC_clicked();
 
     void readSerial();
 

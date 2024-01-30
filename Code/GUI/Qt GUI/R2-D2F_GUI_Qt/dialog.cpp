@@ -14,6 +14,41 @@ Dialog::Dialog(QWidget *parent)
 {
     ui->setupUi(this);
 
+    connect(ui->m1a_setbutton, SIGNAL(clicked()), this, SLOT(m1a_setbutton_clicked()));
+    connect(ui->m1b_setbutton, SIGNAL(clicked()), this, SLOT(m1b_setbutton_clicked()));
+    connect(ui->m2a_setbutton, SIGNAL(clicked()), this, SLOT(m2a_setbutton_clicked()));
+    connect(ui->m2b_setbutton, SIGNAL(clicked()), this, SLOT(m2b_setbutton_clicked()));
+
+    connect(ui->m1pwm_setbutton, SIGNAL(clicked()), this, SLOT(m1pwm_setbutton_clicked()));
+    connect(ui->m2pwm_setbutton, SIGNAL(clicked()), this, SLOT(m2pwm_setbutton_clicked()));
+
+    connect(ui->m1drive_setbutton, SIGNAL(clicked()), this, SLOT(m1drive_setbutton_clicked()));
+    connect(ui->m2drive_setbutton, SIGNAL(clicked()), this, SLOT(m2drive_setbutton_clicked()));
+
+    connect(ui->m1brake_setbutton, SIGNAL(clicked()), this, SLOT(m1brake_setbutton_clicked()));
+    connect(ui->m2brake_setbutton, SIGNAL(clicked()), this, SLOT(m2brake_setbutton_clicked()));
+
+    connect(ui->stopall_button, SIGNAL(clicked()), this, SLOT(stopall_setbutton_clicked()));
+
+
+    // Connect the signals from the buttons to the slots
+    connect(ui->buttonA, SIGNAL(clicked()), this, SLOT(buttonA_clicked()));
+    connect(ui->buttonB, SIGNAL(clicked()), this, SLOT(buttonB_clicked()));
+    connect(ui->buttonC, SIGNAL(clicked()), this, SLOT(buttonC_clicked()));
+
+    // Unknown Command
+    connect(ui->unkcommand_setbutton, SIGNAL(clicked()), this, SLOT(unknowncommand_setbutton_clicked()));
+
+    // RGB LED
+    connect(ui->redled_setbutton, SIGNAL(clicked()), this, SLOT(redled_setbutton_clicked()));
+    connect(ui->greenled_setbutton, SIGNAL(clicked()), this, SLOT(greenled_setbutton_clicked()));
+    connect(ui->blueled_setbutton, SIGNAL(clicked()), this, SLOT(blueled_setbutton_clicked()));
+
+
+
+
+
+
     arduino_port_name = "";
     arduino_is_available = false;
     arduino = new QSerialPort;
@@ -63,6 +98,11 @@ Dialog::Dialog(QWidget *parent)
         QObject::connect(arduino, SIGNAL(readyRead()), this, SLOT(readSerial()));
 
         qDebug() << "Arduino connected on port " << arduino_port_name;
+
+
+        ui->arduinoconnected_connected->setText("True");
+        ui->arduinoconnected_comport->setText(arduino_port_name);
+
 
     }
     else
@@ -117,28 +157,28 @@ void Dialog::readSerial() {
     while (serialBuffer.length() >= SERIAL_SEND_BUFFER_SIZE)
     {
         while_loop_count++;
-        qDebug() << "Entering while loop to process serialBuffer. Iteration number " << while_loop_count;
-        qDebug() << "serialbuffer is long enough.";
+        //qDebug() << "Entering while loop to process serialBuffer. Iteration number " << while_loop_count;
+        //qDebug() << "serialbuffer is long enough.";
         int newlineIndex = serialBuffer.indexOf((char)SERIAL_HEADER);
         if ( (newlineIndex >= 0) && (serialBuffer[newlineIndex+1]== (char)SERIAL_HEADER) )
         {
-            qDebug() << "First two header chars found, first at newlineIndex " << newlineIndex << ". They are " << (char) serialBuffer[newlineIndex] << " and " << (char) serialBuffer[newlineIndex+1] << " and match " << (char) SERIAL_HEADER;
+            //qDebug() << "First two header chars found, first at newlineIndex " << newlineIndex << ". They are " << (char) serialBuffer[newlineIndex] << " and " << (char) serialBuffer[newlineIndex+1] << " and match " << (char) SERIAL_HEADER;
 
             if (newlineIndex + SERIAL_SEND_BUFFER_SIZE <= serialBuffer.size())
             {
-                qDebug() << "serialBuffer is at least long enough to hold a message starting at newline index.";
-                qDebug() << "Removing message from serialBuffer. Old length: " << serialBuffer.size();
+                //qDebug() << "serialBuffer is at least long enough to hold a message starting at newline index.";
+                //qDebug() << "Removing message from serialBuffer. Old length: " << serialBuffer.size();
                 QByteArray message = serialBuffer.mid(newlineIndex, SERIAL_SEND_BUFFER_SIZE); // Extract message as QByteArray
-                qDebug() << "Message length: " << message.length();
-                qDebug() << "Message: " << message.toHex(':');
+                //qDebug() << "Message length: " << message.length();
+                //qDebug() << "Message: " << message.toHex(':');
 
                 serialBuffer.remove(0, newlineIndex + SERIAL_SEND_BUFFER_SIZE); // Remove processed message from buffer
-                qDebug() << "New serialBuffer length: " << serialBuffer.size();
+                //qDebug() << "New serialBuffer length: " << serialBuffer.size();
 
                 // Ensure that the message starts with the header
                 if (message[0] == (char)SERIAL_HEADER && message[1] == (char)SERIAL_HEADER)
                 {
-                    qDebug() << "Again we have confirmed that the extracted message starts with the header.";
+                    //qDebug() << "Again we have confirmed that the extracted message starts with the header.";
                     // Unpack the boolean values
                     byte boolsPacked1 = message[2];
                     bool status_motor1_ina = boolsPacked1 & 1;
@@ -219,6 +259,154 @@ void Dialog::readSerial() {
                     qDebug() << "status_ang_rate_z:\t\t\t" << status_ang_rate_z;
                     qDebug() << "-----------------------------";
                     qDebug() << "-----------------------------";
+
+
+                    QString statusText;
+
+                    // Unknown Command
+                    ui->unkcommand_indicator->setChecked(status_flag_3);
+                    statusText = status_flag_3 ? "Unknown Command" : " ";
+                    ui->unkcommand_readvalue->setText(statusText.toUtf8().constData());
+
+                    // Red LED
+                    ui->redled_indicator->setChecked(status_rgb_led_r);
+                    statusText = status_rgb_led_r ? "On" : "Off";
+                    ui->redled_readvalue->setText(statusText.toUtf8().constData());
+
+                    // Green LED
+                    ui->greenled_indicator->setChecked(status_rgb_led_g);
+                    statusText = status_rgb_led_g ? "On" : "Off";
+                    ui->greenled_readvalue->setText(statusText.toUtf8().constData());
+
+                    // Blue LED
+                    ui->blueled_indicator->setChecked(status_rgb_led_b);
+                    statusText = status_rgb_led_b ? "On" : "Off";
+                    ui->blueled_readvalue->setText(statusText.toUtf8().constData());
+
+                    // M1 INA
+                    ui->m1a_indicator->setChecked(status_motor1_ina);
+                    statusText = status_motor1_ina ? "1" : "0";
+                    ui->m1a_readvalue->setText(statusText.toUtf8().constData());
+
+                    // M1 INB
+                    ui->m1b_indicator->setChecked(status_motor1_inb);
+                    statusText = status_motor1_inb ? "1" : "0";
+                    ui->m1b_readvalue->setText(statusText.toUtf8().constData());
+
+                    // M2 INA
+                    ui->m2a_indicator->setChecked(status_motor2_ina);
+                    statusText = status_motor2_ina ? "1" : "0";
+                    ui->m2a_readvalue->setText(statusText.toUtf8().constData());
+
+                    // M2 INB
+                    ui->m2b_indicator->setChecked(status_motor2_inb);
+                    statusText = status_motor2_inb ? "1" : "0";
+                    ui->m2b_readvalue->setText(statusText.toUtf8().constData());
+
+                    // M1 PWM
+                    statusText = QString::number(status_motor1_pwm);
+                    ui->m1pwm_readvalue->setText(statusText.toUtf8().constData());
+
+                    // M2 PWM
+                    statusText = QString::number(status_motor2_pwm);
+                    ui->m2pwm_readvalue->setText(statusText.toUtf8().constData());
+
+                    // M1 EN/DIAG
+                    ui->m1diag_indicator->setChecked(status_motor1_endiag);
+                    statusText = status_motor1_endiag ? "1" : "0";
+                    ui->m1diag_readvalue->setText(statusText.toUtf8().constData());
+
+                    // M2 EN/DIAG
+                    ui->m2diag_indicator->setChecked(status_motor2_endiag);
+                    statusText = status_motor2_endiag ? "1" : "0";
+                    ui->m2diag_readvalue->setText(statusText.toUtf8().constData());
+
+                    // M1 Current
+                    statusText = QString::number(status_motor1_cs);
+                    ui->m1current_readvalue->setText(statusText.toUtf8().constData());
+
+                    // M2 Current
+                    statusText = QString::number(status_motor2_cs);
+                    ui->m2current_readvalue->setText(statusText.toUtf8().constData());
+
+                    // M1 Enc Count
+                    statusText = QString::number(status_m1_enc_count);
+                    ui->m1encct_readvalue->setText(statusText.toUtf8().constData());
+
+                    // M2 Enc Count
+                    statusText = QString::number(status_m2_enc_count);
+                    ui->m2encct_readvalue->setText(statusText.toUtf8().constData());
+
+                    // M1 Enc Rate
+                    statusText = QString::number(status_m1_rot_rate);
+                    ui->m1encrate_readvalue->setText(statusText.toUtf8().constData());
+
+                    // M2 Enc Rate
+                    statusText = QString::number(status_m2_rot_rate);
+                    ui->m2encrate_readvalue->setText(statusText.toUtf8().constData());
+
+                    // M1 Drive
+                    statusText = QString::number(status_motor1_pwm);
+                    ui->m1drive_readvalue->setText(statusText.toUtf8().constData());
+
+                    // M2 Drive
+                    statusText = QString::number(status_motor2_pwm);
+                    ui->m2drive_readvalue->setText(statusText.toUtf8().constData());
+
+                    // M1 Brake
+                    statusText = QString::number(status_motor1_pwm);
+                    ui->m1brake_readvalue->setText(statusText.toUtf8().constData());
+
+                    // M2 Brake
+                    statusText = QString::number(status_motor2_pwm);
+                    ui->m2brake_readvalue->setText(statusText.toUtf8().constData());
+
+                    // M1 Drive Indicator
+                    if( status_motor1_ina && status_motor1_inb)
+                    {
+                        // Brake
+                        ui->m1brake_indicator->setChecked(true);
+                        ui->m1drive_indicator->setChecked(false);
+                        ui->m1coast_indicator->setChecked(false);
+                    }
+                    // Drive
+                    else if( (status_motor1_ina && (!status_motor1_inb)) || ((!status_motor1_ina) && status_motor1_inb) )
+                    {
+                        ui->m1brake_indicator->setChecked(false);
+                        ui->m1drive_indicator->setChecked(true);
+                        ui->m1coast_indicator->setChecked(false);
+                    }
+                    // Coast
+                    else if( (!status_motor1_ina) && (!status_motor1_inb)  )
+                    {
+                        ui->m1brake_indicator->setChecked(false);
+                        ui->m1drive_indicator->setChecked(false);
+                        ui->m1coast_indicator->setChecked(true);
+                    }
+
+                    // M2 Drive Indicator
+                    if( status_motor2_ina && status_motor2_inb)
+                    {
+                        // Brake
+                        ui->m2brake_indicator->setChecked(true);
+                        ui->m2drive_indicator->setChecked(false);
+                        ui->m2coast_indicator->setChecked(false);
+                    }
+                    // Drive
+                    else if( (status_motor2_ina && (!status_motor2_inb)) || ((!status_motor2_ina) && status_motor2_inb) )
+                    {
+                        ui->m2brake_indicator->setChecked(false);
+                        ui->m2drive_indicator->setChecked(true);
+                        ui->m2coast_indicator->setChecked(false);
+                    }
+                    // Coast
+                    else if( (!status_motor2_ina) && (!status_motor2_inb)  )
+                    {
+                        ui->m2brake_indicator->setChecked(false);
+                        ui->m2drive_indicator->setChecked(false);
+                        ui->m2coast_indicator->setChecked(true);
+                    }
+
                 }
             }
             else
@@ -284,6 +472,136 @@ void Dialog::readSerial() {
 
 
 
+void Dialog::m1a_setbutton_clicked()
+{
+    QString setvalue = ui->m1a_setvalue->text();
+    QString command = "<M1A," + setvalue + ",0>";
+    handle_button_clicked(command);
+    //qDebug() << command;
+}
+void Dialog::m1b_setbutton_clicked()
+{
+    QString setvalue = ui->m1b_setvalue->text();
+    QString command = "<M1B," + setvalue + ",0>";
+    handle_button_clicked(command);
+    //qDebug() << command;
+}
+
+void Dialog::m2a_setbutton_clicked()
+{
+    QString setvalue = ui->m2a_setvalue->text();
+    QString command = "<M2A," + setvalue + ",0>";
+    handle_button_clicked(command);
+    //qDebug() << command;
+}
+void Dialog::m2b_setbutton_clicked()
+{
+    QString setvalue = ui->m2b_setvalue->text();
+    QString command = "<M2B," + setvalue + ",0>";
+    handle_button_clicked(command);
+    //qDebug() << command;
+}
+
+void Dialog::m1pwm_setbutton_clicked()
+{
+    QString setvalue = ui->m1pwm_setvalue->text();
+    QString command = "<M1P," + setvalue + ",0>";
+    handle_button_clicked(command);
+    //qDebug() << command;
+}
+
+void Dialog::m2pwm_setbutton_clicked()
+{
+    QString setvalue = ui->m2pwm_setvalue->text();
+    QString command = "<M2P," + setvalue + ",0>";
+    handle_button_clicked(command);
+    //qDebug() << command;
+}
+
+void Dialog::m1drive_setbutton_clicked()
+{
+    QString setvalue = ui->m1drive_setvalue->text();
+    QString command = "<M1S," + setvalue + ",0>";
+    handle_button_clicked(command);
+    //qDebug() << command;
+}
+
+void Dialog::m2drive_setbutton_clicked()
+{
+    QString setvalue = ui->m2drive_setvalue->text();
+    QString command = "<M2S," + setvalue + ",0>";
+    handle_button_clicked(command);
+    //qDebug() << command;
+}
+
+void Dialog::m1brake_setbutton_clicked()
+{
+    QString setvalue = ui->m1brake_setvalue->text();
+    QString command = "<M1K," + setvalue + ",0>";
+    handle_button_clicked(command);
+    //qDebug() << command;
+}
+
+void Dialog::m2brake_setbutton_clicked()
+{
+    QString setvalue = ui->m2brake_setvalue->text();
+    QString command = "<M2K," + setvalue + ",0>";
+    handle_button_clicked(command);
+    //qDebug() << command;
+}
+
+void Dialog::stopall_setbutton_clicked()
+{
+    QString command = "<M1P,0,0>";
+    handle_button_clicked(command);
+    command = "<M2P,0,0>";
+    handle_button_clicked(command);
+    command = "<M1A,0,0>";
+    handle_button_clicked(command);
+    command = "<M1B,0,0>";
+    handle_button_clicked(command);
+    command = "<M2A,0,0>";
+    handle_button_clicked(command);
+    command = "<M2B,0,0>";
+    handle_button_clicked(command);
+
+    //qDebug() << command;
+}
+
+
+
+
+void Dialog::unknowncommand_setbutton_clicked()
+{
+    QString command = "<CE,0,0>";
+    handle_button_clicked(command);
+    //qDebug() << command;
+}
+
+void Dialog::redled_setbutton_clicked()
+{
+    QString setvalue = ui->redled_setvalue->text();
+    QString command = "<LDR," + setvalue + ",0>";
+    handle_button_clicked(command);
+    //qDebug() << command;
+}
+
+void Dialog::greenled_setbutton_clicked()
+{
+    QString setvalue = ui->greenled_setvalue->text();
+    QString command = "<LDG," + setvalue + ",0>";
+    handle_button_clicked(command);
+    //qDebug() << command;
+}
+
+void Dialog::blueled_setbutton_clicked()
+{
+    QString setvalue = ui->blueled_setvalue->text();
+    QString command = "<LDB," + setvalue + ",0>";
+    handle_button_clicked(command);
+    //qDebug() << command;
+}
+
 
 
 
@@ -301,19 +619,19 @@ void Dialog::handle_button_clicked(QString data)
     }
 }
 
-void Dialog::on_buttonA_clicked()
+void Dialog::buttonA_clicked()
 {
-    handle_button_clicked("A");
+    handle_button_clicked("<LDB,0,0>");
 }
 
 
-void Dialog::on_buttonB_clicked()
+void Dialog::buttonB_clicked()
 {
-    handle_button_clicked("B");
+    handle_button_clicked("<LDB,1,0>");
 }
 
 
-void Dialog::on_buttonC_clicked()
+void Dialog::buttonC_clicked()
 {
     handle_button_clicked("C");
 }

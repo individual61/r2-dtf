@@ -8,6 +8,13 @@ extern mbed::PwmOut pwmPin2;
 
 void motor_driver_init(void);
 
+void motor_driver_setM1_INA(bool setting);
+void motor_driver_setM1_INB(bool setting);
+void motor_driver_setM2_INA(bool setting);
+void motor_driver_setM2_INB(bool setting);
+void motor_driver_setM1_PWM(int speed);
+void motor_driver_setM2_PWM(int speed);
+
 void motor_driver_setM1Speed(int speed);
 void motor_driver_setM2Speed(int speed);
 void motor_driver_setSpeeds(int m1Speed, int m2Speed);
@@ -27,6 +34,8 @@ extern void sendInt(int8_t value);
 extern void sendUnsignedInt(uint8_t value);
 extern void sendFloat(float value);
 extern void sendSerialData();
+
+extern void readSerialData();
 
 extern bool status_motor1_ina;
 extern bool  status_motor1_inb;
