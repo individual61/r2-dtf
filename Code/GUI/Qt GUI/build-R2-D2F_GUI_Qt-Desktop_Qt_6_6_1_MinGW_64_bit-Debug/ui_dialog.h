@@ -149,10 +149,14 @@ public:
     QHBoxLayout *horizontalLayout_33;
     QLabel *m1encct_label;
     QLineEdit *m1encct_readvalue;
+    QRadioButton *m1_enc_dir_rev_indicator;
+    QRadioButton *m1_enc_dir_fwd_indicator;
     QWidget *layoutWidget_29;
     QHBoxLayout *horizontalLayout_34;
     QLabel *m2encct_label;
     QLineEdit *m2encct_readvalue;
+    QRadioButton *m2_enc_dir_rev_indicator;
+    QRadioButton *m2_enc_dir_fwd_indicator;
     QWidget *layoutWidget_30;
     QHBoxLayout *horizontalLayout_35;
     QLabel *m2encrate_label;
@@ -195,6 +199,32 @@ public:
     QLineEdit *flag2_readvalue;
     QRadioButton *flag2_indicator;
     QRadioButton *unkcommand_indicator;
+    QWidget *layoutWidget_32;
+    QHBoxLayout *horizontalLayout_37;
+    QLabel *rotratey_label_2;
+    QLineEdit *angley_readvalue;
+    QWidget *layoutWidget_33;
+    QHBoxLayout *horizontalLayout_38;
+    QLabel *rotratez_label_2;
+    QLineEdit *anglez_readvalue;
+    QWidget *layoutWidget_34;
+    QHBoxLayout *horizontalLayout_39;
+    QLabel *rotratex_label_2;
+    QLineEdit *anglex_readvalue;
+    QRadioButton *flag1_indicator_2;
+    QRadioButton *flag3_indicator;
+    QRadioButton *flag2_indicator_2;
+    QRadioButton *flag6_indicator;
+    QRadioButton *flag4_indicator;
+    QRadioButton *flag5_indicator;
+    QRadioButton *flag7_indicator;
+    QRadioButton *flag8_indicator;
+    QRadioButton *d13_indicator;
+    QRadioButton *d11_indicator;
+    QRadioButton *d3_indicator;
+    QLineEdit *int16_entry;
+    QLineEdit *int32_entry;
+    QLineEdit *float_entry;
     QWidget *widget;
     QHBoxLayout *horizontalLayout;
     QPushButton *buttonA;
@@ -212,7 +242,7 @@ public:
         if (Dialog->objectName().isEmpty())
             Dialog->setObjectName("Dialog");
         Dialog->setEnabled(true);
-        Dialog->resize(1398, 463);
+        Dialog->resize(1398, 477);
         Dialog->setMinimumSize(QSize(0, 0));
         Dialog->setBaseSize(QSize(0, 0));
         layoutWidget = new QWidget(Dialog);
@@ -510,7 +540,7 @@ public:
 
         layoutWidget_9 = new QWidget(Dialog);
         layoutWidget_9->setObjectName("layoutWidget_9");
-        layoutWidget_9->setGeometry(QRect(10, 50, 221, 26));
+        layoutWidget_9->setGeometry(QRect(150, 60, 221, 26));
         horizontalLayout_14 = new QHBoxLayout(layoutWidget_9);
         horizontalLayout_14->setObjectName("horizontalLayout_14");
         horizontalLayout_14->setContentsMargins(0, 0, 0, 0);
@@ -870,7 +900,7 @@ public:
 
         layoutWidget_21 = new QWidget(Dialog);
         layoutWidget_21->setObjectName("layoutWidget_21");
-        layoutWidget_21->setGeometry(QRect(30, 310, 161, 26));
+        layoutWidget_21->setGeometry(QRect(170, 320, 161, 26));
         horizontalLayout_26 = new QHBoxLayout(layoutWidget_21);
         horizontalLayout_26->setObjectName("horizontalLayout_26");
         horizontalLayout_26->setContentsMargins(0, 0, 0, 0);
@@ -888,7 +918,7 @@ public:
 
         layoutWidget_22 = new QWidget(Dialog);
         layoutWidget_22->setObjectName("layoutWidget_22");
-        layoutWidget_22->setGeometry(QRect(30, 340, 161, 26));
+        layoutWidget_22->setGeometry(QRect(170, 350, 161, 26));
         horizontalLayout_27 = new QHBoxLayout(layoutWidget_22);
         horizontalLayout_27->setObjectName("horizontalLayout_27");
         horizontalLayout_27->setContentsMargins(0, 0, 0, 0);
@@ -906,7 +936,7 @@ public:
 
         layoutWidget_23 = new QWidget(Dialog);
         layoutWidget_23->setObjectName("layoutWidget_23");
-        layoutWidget_23->setGeometry(QRect(30, 370, 161, 26));
+        layoutWidget_23->setGeometry(QRect(170, 380, 161, 26));
         horizontalLayout_28 = new QHBoxLayout(layoutWidget_23);
         horizontalLayout_28->setObjectName("horizontalLayout_28");
         horizontalLayout_28->setContentsMargins(0, 0, 0, 0);
@@ -924,7 +954,7 @@ public:
 
         layoutWidget_24 = new QWidget(Dialog);
         layoutWidget_24->setObjectName("layoutWidget_24");
-        layoutWidget_24->setGeometry(QRect(190, 370, 161, 26));
+        layoutWidget_24->setGeometry(QRect(330, 380, 161, 26));
         horizontalLayout_29 = new QHBoxLayout(layoutWidget_24);
         horizontalLayout_29->setObjectName("horizontalLayout_29");
         horizontalLayout_29->setContentsMargins(0, 0, 0, 0);
@@ -942,7 +972,7 @@ public:
 
         layoutWidget_25 = new QWidget(Dialog);
         layoutWidget_25->setObjectName("layoutWidget_25");
-        layoutWidget_25->setGeometry(QRect(190, 340, 161, 26));
+        layoutWidget_25->setGeometry(QRect(330, 350, 161, 26));
         horizontalLayout_30 = new QHBoxLayout(layoutWidget_25);
         horizontalLayout_30->setObjectName("horizontalLayout_30");
         horizontalLayout_30->setContentsMargins(0, 0, 0, 0);
@@ -960,7 +990,7 @@ public:
 
         layoutWidget_26 = new QWidget(Dialog);
         layoutWidget_26->setObjectName("layoutWidget_26");
-        layoutWidget_26->setGeometry(QRect(190, 310, 161, 26));
+        layoutWidget_26->setGeometry(QRect(330, 320, 161, 26));
         horizontalLayout_31 = new QHBoxLayout(layoutWidget_26);
         horizontalLayout_31->setObjectName("horizontalLayout_31");
         horizontalLayout_31->setContentsMargins(0, 0, 0, 0);
@@ -996,7 +1026,7 @@ public:
 
         layoutWidget_28 = new QWidget(Dialog);
         layoutWidget_28->setObjectName("layoutWidget_28");
-        layoutWidget_28->setGeometry(QRect(680, 190, 181, 26));
+        layoutWidget_28->setGeometry(QRect(680, 190, 261, 26));
         horizontalLayout_33 = new QHBoxLayout(layoutWidget_28);
         horizontalLayout_33->setObjectName("horizontalLayout_33");
         horizontalLayout_33->setContentsMargins(0, 0, 0, 0);
@@ -1012,9 +1042,55 @@ public:
 
         horizontalLayout_33->addWidget(m1encct_readvalue);
 
+        m1_enc_dir_rev_indicator = new QRadioButton(layoutWidget_28);
+        m1_enc_dir_rev_indicator->setObjectName("m1_enc_dir_rev_indicator");
+        m1_enc_dir_rev_indicator->setMaximumSize(QSize(34, 16777215));
+        m1_enc_dir_rev_indicator->setStyleSheet(QString::fromUtf8("QRadioButton::indicator:checked {\n"
+"    background-color:       red;\n"
+"    border:                 1px solid white;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator:unchecked {\n"
+"    background-color:       grey;\n"
+"    border:                 1px solid black;\n"
+"}\n"
+"QRadioButton::indicator{\n"
+"\n"
+"width: 30px;\n"
+"height: 15px;\n"
+"}\n"
+""));
+        m1_enc_dir_rev_indicator->setChecked(false);
+        m1_enc_dir_rev_indicator->setAutoExclusive(false);
+
+        horizontalLayout_33->addWidget(m1_enc_dir_rev_indicator);
+
+        m1_enc_dir_fwd_indicator = new QRadioButton(layoutWidget_28);
+        m1_enc_dir_fwd_indicator->setObjectName("m1_enc_dir_fwd_indicator");
+        m1_enc_dir_fwd_indicator->setMaximumSize(QSize(34, 16777215));
+        m1_enc_dir_fwd_indicator->setStyleSheet(QString::fromUtf8("QRadioButton::indicator:checked {\n"
+"    background-color:       red;\n"
+"    border:                 1px solid white;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator:unchecked {\n"
+"    background-color:       grey;\n"
+"    border:                 1px solid black;\n"
+"}\n"
+"QRadioButton::indicator{\n"
+"\n"
+"width: 30px;\n"
+"height: 15px;\n"
+"}\n"
+""));
+        m1_enc_dir_fwd_indicator->setChecked(false);
+        m1_enc_dir_fwd_indicator->setAutoExclusive(false);
+
+        horizontalLayout_33->addWidget(m1_enc_dir_fwd_indicator);
+
         layoutWidget_29 = new QWidget(Dialog);
         layoutWidget_29->setObjectName("layoutWidget_29");
-        layoutWidget_29->setGeometry(QRect(1030, 190, 181, 26));
+        layoutWidget_29->setGeometry(QRect(1030, 190, 261, 26));
         horizontalLayout_34 = new QHBoxLayout(layoutWidget_29);
         horizontalLayout_34->setObjectName("horizontalLayout_34");
         horizontalLayout_34->setContentsMargins(0, 0, 0, 0);
@@ -1029,6 +1105,52 @@ public:
         m2encct_readvalue->setMaximumSize(QSize(90, 16777215));
 
         horizontalLayout_34->addWidget(m2encct_readvalue);
+
+        m2_enc_dir_rev_indicator = new QRadioButton(layoutWidget_29);
+        m2_enc_dir_rev_indicator->setObjectName("m2_enc_dir_rev_indicator");
+        m2_enc_dir_rev_indicator->setMaximumSize(QSize(34, 16777215));
+        m2_enc_dir_rev_indicator->setStyleSheet(QString::fromUtf8("QRadioButton::indicator:checked {\n"
+"    background-color:       red;\n"
+"    border:                 1px solid white;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator:unchecked {\n"
+"    background-color:       grey;\n"
+"    border:                 1px solid black;\n"
+"}\n"
+"QRadioButton::indicator{\n"
+"\n"
+"width: 30px;\n"
+"height: 15px;\n"
+"}\n"
+""));
+        m2_enc_dir_rev_indicator->setChecked(false);
+        m2_enc_dir_rev_indicator->setAutoExclusive(false);
+
+        horizontalLayout_34->addWidget(m2_enc_dir_rev_indicator);
+
+        m2_enc_dir_fwd_indicator = new QRadioButton(layoutWidget_29);
+        m2_enc_dir_fwd_indicator->setObjectName("m2_enc_dir_fwd_indicator");
+        m2_enc_dir_fwd_indicator->setMaximumSize(QSize(34, 16777215));
+        m2_enc_dir_fwd_indicator->setStyleSheet(QString::fromUtf8("QRadioButton::indicator:checked {\n"
+"    background-color:       red;\n"
+"    border:                 1px solid white;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator:unchecked {\n"
+"    background-color:       grey;\n"
+"    border:                 1px solid black;\n"
+"}\n"
+"QRadioButton::indicator{\n"
+"\n"
+"width: 30px;\n"
+"height: 15px;\n"
+"}\n"
+""));
+        m2_enc_dir_fwd_indicator->setChecked(false);
+        m2_enc_dir_fwd_indicator->setAutoExclusive(false);
+
+        horizontalLayout_34->addWidget(m2_enc_dir_fwd_indicator);
 
         layoutWidget_30 = new QWidget(Dialog);
         layoutWidget_30->setObjectName("layoutWidget_30");
@@ -1050,7 +1172,7 @@ public:
 
         layoutWidget_31 = new QWidget(Dialog);
         layoutWidget_31->setObjectName("layoutWidget_31");
-        layoutWidget_31->setGeometry(QRect(10, 10, 311, 26));
+        layoutWidget_31->setGeometry(QRect(150, 20, 311, 26));
         horizontalLayout_36 = new QHBoxLayout(layoutWidget_31);
         horizontalLayout_36->setObjectName("horizontalLayout_36");
         horizontalLayout_36->setContentsMargins(0, 0, 0, 0);
@@ -1083,7 +1205,7 @@ public:
 "background-color: rgb(255, 255, 255);"));
         layoutWidget_10 = new QWidget(Dialog);
         layoutWidget_10->setObjectName("layoutWidget_10");
-        layoutWidget_10->setGeometry(QRect(10, 130, 344, 26));
+        layoutWidget_10->setGeometry(QRect(150, 140, 344, 26));
         horizontalLayout_15 = new QHBoxLayout(layoutWidget_10);
         horizontalLayout_15->setObjectName("horizontalLayout_15");
         horizontalLayout_15->setContentsMargins(0, 0, 0, 0);
@@ -1135,7 +1257,7 @@ public:
 
         layoutWidget_11 = new QWidget(Dialog);
         layoutWidget_11->setObjectName("layoutWidget_11");
-        layoutWidget_11->setGeometry(QRect(10, 100, 344, 26));
+        layoutWidget_11->setGeometry(QRect(150, 110, 344, 26));
         horizontalLayout_16 = new QHBoxLayout(layoutWidget_11);
         horizontalLayout_16->setObjectName("horizontalLayout_16");
         horizontalLayout_16->setContentsMargins(0, 0, 0, 0);
@@ -1187,7 +1309,7 @@ public:
 
         layoutWidget_12 = new QWidget(Dialog);
         layoutWidget_12->setObjectName("layoutWidget_12");
-        layoutWidget_12->setGeometry(QRect(10, 160, 344, 26));
+        layoutWidget_12->setGeometry(QRect(150, 170, 344, 26));
         horizontalLayout_17 = new QHBoxLayout(layoutWidget_12);
         horizontalLayout_17->setObjectName("horizontalLayout_17");
         horizontalLayout_17->setContentsMargins(0, 0, 0, 0);
@@ -1239,7 +1361,7 @@ public:
 
         layoutWidget_7 = new QWidget(Dialog);
         layoutWidget_7->setObjectName("layoutWidget_7");
-        layoutWidget_7->setGeometry(QRect(10, 200, 221, 26));
+        layoutWidget_7->setGeometry(QRect(150, 210, 221, 26));
         horizontalLayout_12 = new QHBoxLayout(layoutWidget_7);
         horizontalLayout_12->setObjectName("horizontalLayout_12");
         horizontalLayout_12->setContentsMargins(0, 0, 0, 0);
@@ -1279,7 +1401,7 @@ public:
 
         layoutWidget_8 = new QWidget(Dialog);
         layoutWidget_8->setObjectName("layoutWidget_8");
-        layoutWidget_8->setGeometry(QRect(10, 230, 221, 26));
+        layoutWidget_8->setGeometry(QRect(150, 240, 221, 26));
         horizontalLayout_13 = new QHBoxLayout(layoutWidget_8);
         horizontalLayout_13->setObjectName("horizontalLayout_13");
         horizontalLayout_13->setContentsMargins(0, 0, 0, 0);
@@ -1319,7 +1441,7 @@ public:
 
         unkcommand_indicator = new QRadioButton(Dialog);
         unkcommand_indicator->setObjectName("unkcommand_indicator");
-        unkcommand_indicator->setGeometry(QRect(240, 50, 141, 22));
+        unkcommand_indicator->setGeometry(QRect(380, 60, 141, 22));
         unkcommand_indicator->setStyleSheet(QString::fromUtf8("QRadioButton {\n"
 "    min-width: 60px;\n"
 "    min-height: 15px;\n"
@@ -1338,9 +1460,303 @@ public:
 ""));
         unkcommand_indicator->setChecked(false);
         unkcommand_indicator->setAutoExclusive(false);
+        layoutWidget_32 = new QWidget(Dialog);
+        layoutWidget_32->setObjectName("layoutWidget_32");
+        layoutWidget_32->setGeometry(QRect(490, 350, 161, 26));
+        horizontalLayout_37 = new QHBoxLayout(layoutWidget_32);
+        horizontalLayout_37->setObjectName("horizontalLayout_37");
+        horizontalLayout_37->setContentsMargins(0, 0, 0, 0);
+        rotratey_label_2 = new QLabel(layoutWidget_32);
+        rotratey_label_2->setObjectName("rotratey_label_2");
+        rotratey_label_2->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        horizontalLayout_37->addWidget(rotratey_label_2);
+
+        angley_readvalue = new QLineEdit(layoutWidget_32);
+        angley_readvalue->setObjectName("angley_readvalue");
+        angley_readvalue->setMaximumSize(QSize(90, 16777215));
+
+        horizontalLayout_37->addWidget(angley_readvalue);
+
+        layoutWidget_33 = new QWidget(Dialog);
+        layoutWidget_33->setObjectName("layoutWidget_33");
+        layoutWidget_33->setGeometry(QRect(490, 380, 161, 26));
+        horizontalLayout_38 = new QHBoxLayout(layoutWidget_33);
+        horizontalLayout_38->setObjectName("horizontalLayout_38");
+        horizontalLayout_38->setContentsMargins(0, 0, 0, 0);
+        rotratez_label_2 = new QLabel(layoutWidget_33);
+        rotratez_label_2->setObjectName("rotratez_label_2");
+        rotratez_label_2->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        horizontalLayout_38->addWidget(rotratez_label_2);
+
+        anglez_readvalue = new QLineEdit(layoutWidget_33);
+        anglez_readvalue->setObjectName("anglez_readvalue");
+        anglez_readvalue->setMaximumSize(QSize(90, 16777215));
+
+        horizontalLayout_38->addWidget(anglez_readvalue);
+
+        layoutWidget_34 = new QWidget(Dialog);
+        layoutWidget_34->setObjectName("layoutWidget_34");
+        layoutWidget_34->setGeometry(QRect(490, 320, 161, 26));
+        horizontalLayout_39 = new QHBoxLayout(layoutWidget_34);
+        horizontalLayout_39->setObjectName("horizontalLayout_39");
+        horizontalLayout_39->setContentsMargins(0, 0, 0, 0);
+        rotratex_label_2 = new QLabel(layoutWidget_34);
+        rotratex_label_2->setObjectName("rotratex_label_2");
+        rotratex_label_2->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        horizontalLayout_39->addWidget(rotratex_label_2);
+
+        anglex_readvalue = new QLineEdit(layoutWidget_34);
+        anglex_readvalue->setObjectName("anglex_readvalue");
+        anglex_readvalue->setMaximumSize(QSize(90, 16777215));
+
+        horizontalLayout_39->addWidget(anglex_readvalue);
+
+        flag1_indicator_2 = new QRadioButton(Dialog);
+        flag1_indicator_2->setObjectName("flag1_indicator_2");
+        flag1_indicator_2->setGeometry(QRect(10, 10, 91, 22));
+        flag1_indicator_2->setStyleSheet(QString::fromUtf8("QRadioButton {\n"
+"    min-width: 60px;\n"
+"    min-height: 15px;\n"
+"    color: black;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator:checked {\n"
+"    background-color: blue;\n"
+"    border: 1px solid black;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator:unchecked {\n"
+"    background-color: grey;\n"
+"    border: 1px solid black;\n"
+"}\n"
+""));
+        flag1_indicator_2->setChecked(false);
+        flag1_indicator_2->setAutoExclusive(false);
+        flag3_indicator = new QRadioButton(Dialog);
+        flag3_indicator->setObjectName("flag3_indicator");
+        flag3_indicator->setGeometry(QRect(10, 50, 91, 22));
+        flag3_indicator->setStyleSheet(QString::fromUtf8("QRadioButton {\n"
+"    min-width: 60px;\n"
+"    min-height: 15px;\n"
+"    color: black;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator:checked {\n"
+"    background-color: blue;\n"
+"    border: 1px solid black;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator:unchecked {\n"
+"    background-color: grey;\n"
+"    border: 1px solid black;\n"
+"}\n"
+""));
+        flag3_indicator->setAutoExclusive(false);
+        flag2_indicator_2 = new QRadioButton(Dialog);
+        flag2_indicator_2->setObjectName("flag2_indicator_2");
+        flag2_indicator_2->setGeometry(QRect(10, 30, 91, 22));
+        flag2_indicator_2->setStyleSheet(QString::fromUtf8("QRadioButton {\n"
+"    min-width: 60px;\n"
+"    min-height: 15px;\n"
+"    color: black;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator:checked {\n"
+"    background-color: blue;\n"
+"    border: 1px solid black;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator:unchecked {\n"
+"    background-color: grey;\n"
+"    border: 1px solid black;\n"
+"}\n"
+""));
+        flag2_indicator_2->setChecked(false);
+        flag2_indicator_2->setAutoExclusive(false);
+        flag6_indicator = new QRadioButton(Dialog);
+        flag6_indicator->setObjectName("flag6_indicator");
+        flag6_indicator->setGeometry(QRect(10, 110, 91, 22));
+        flag6_indicator->setStyleSheet(QString::fromUtf8("QRadioButton {\n"
+"    min-width: 60px;\n"
+"    min-height: 15px;\n"
+"    color: black;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator:checked {\n"
+"    background-color: blue;\n"
+"    border: 1px solid black;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator:unchecked {\n"
+"    background-color: grey;\n"
+"    border: 1px solid black;\n"
+"}\n"
+""));
+        flag6_indicator->setAutoExclusive(false);
+        flag4_indicator = new QRadioButton(Dialog);
+        flag4_indicator->setObjectName("flag4_indicator");
+        flag4_indicator->setGeometry(QRect(10, 70, 91, 22));
+        flag4_indicator->setStyleSheet(QString::fromUtf8("QRadioButton {\n"
+"    min-width: 60px;\n"
+"    min-height: 15px;\n"
+"    color: black;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator:checked {\n"
+"    background-color: blue;\n"
+"    border: 1px solid black;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator:unchecked {\n"
+"    background-color: grey;\n"
+"    border: 1px solid black;\n"
+"}\n"
+""));
+        flag4_indicator->setChecked(false);
+        flag4_indicator->setAutoExclusive(false);
+        flag5_indicator = new QRadioButton(Dialog);
+        flag5_indicator->setObjectName("flag5_indicator");
+        flag5_indicator->setGeometry(QRect(10, 90, 91, 22));
+        flag5_indicator->setStyleSheet(QString::fromUtf8("QRadioButton {\n"
+"    min-width: 60px;\n"
+"    min-height: 15px;\n"
+"    color: black;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator:checked {\n"
+"    background-color: blue;\n"
+"    border: 1px solid black;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator:unchecked {\n"
+"    background-color: grey;\n"
+"    border: 1px solid black;\n"
+"}\n"
+""));
+        flag5_indicator->setChecked(false);
+        flag5_indicator->setAutoExclusive(false);
+        flag7_indicator = new QRadioButton(Dialog);
+        flag7_indicator->setObjectName("flag7_indicator");
+        flag7_indicator->setGeometry(QRect(10, 130, 91, 22));
+        flag7_indicator->setStyleSheet(QString::fromUtf8("QRadioButton {\n"
+"    min-width: 60px;\n"
+"    min-height: 15px;\n"
+"    color: black;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator:checked {\n"
+"    background-color: blue;\n"
+"    border: 1px solid black;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator:unchecked {\n"
+"    background-color: grey;\n"
+"    border: 1px solid black;\n"
+"}\n"
+""));
+        flag7_indicator->setChecked(false);
+        flag7_indicator->setAutoExclusive(false);
+        flag8_indicator = new QRadioButton(Dialog);
+        flag8_indicator->setObjectName("flag8_indicator");
+        flag8_indicator->setGeometry(QRect(10, 150, 91, 22));
+        flag8_indicator->setStyleSheet(QString::fromUtf8("QRadioButton {\n"
+"    min-width: 60px;\n"
+"    min-height: 15px;\n"
+"    color: black;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator:checked {\n"
+"    background-color: blue;\n"
+"    border: 1px solid black;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator:unchecked {\n"
+"    background-color: grey;\n"
+"    border: 1px solid black;\n"
+"}\n"
+""));
+        flag8_indicator->setChecked(false);
+        flag8_indicator->setAutoExclusive(false);
+        d13_indicator = new QRadioButton(Dialog);
+        d13_indicator->setObjectName("d13_indicator");
+        d13_indicator->setGeometry(QRect(10, 230, 91, 22));
+        d13_indicator->setStyleSheet(QString::fromUtf8("QRadioButton {\n"
+"    min-width: 60px;\n"
+"    min-height: 15px;\n"
+"    color: black;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator:checked {\n"
+"    background-color: blue;\n"
+"    border: 1px solid black;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator:unchecked {\n"
+"    background-color: grey;\n"
+"    border: 1px solid black;\n"
+"}\n"
+""));
+        d13_indicator->setChecked(false);
+        d13_indicator->setAutoExclusive(false);
+        d11_indicator = new QRadioButton(Dialog);
+        d11_indicator->setObjectName("d11_indicator");
+        d11_indicator->setGeometry(QRect(10, 210, 91, 22));
+        d11_indicator->setStyleSheet(QString::fromUtf8("QRadioButton {\n"
+"    min-width: 60px;\n"
+"    min-height: 15px;\n"
+"    color: black;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator:checked {\n"
+"    background-color: blue;\n"
+"    border: 1px solid black;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator:unchecked {\n"
+"    background-color: grey;\n"
+"    border: 1px solid black;\n"
+"}\n"
+""));
+        d11_indicator->setChecked(false);
+        d11_indicator->setAutoExclusive(false);
+        d3_indicator = new QRadioButton(Dialog);
+        d3_indicator->setObjectName("d3_indicator");
+        d3_indicator->setGeometry(QRect(10, 190, 91, 22));
+        d3_indicator->setStyleSheet(QString::fromUtf8("QRadioButton {\n"
+"    min-width: 60px;\n"
+"    min-height: 15px;\n"
+"    color: black;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator:checked {\n"
+"    background-color: blue;\n"
+"    border: 1px solid black;\n"
+"}\n"
+"\n"
+"QRadioButton::indicator:unchecked {\n"
+"    background-color: grey;\n"
+"    border: 1px solid black;\n"
+"}\n"
+""));
+        d3_indicator->setAutoExclusive(false);
+        int16_entry = new QLineEdit(Dialog);
+        int16_entry->setObjectName("int16_entry");
+        int16_entry->setGeometry(QRect(40, 330, 90, 24));
+        int16_entry->setMaximumSize(QSize(90, 16777215));
+        int32_entry = new QLineEdit(Dialog);
+        int32_entry->setObjectName("int32_entry");
+        int32_entry->setGeometry(QRect(40, 360, 90, 24));
+        int32_entry->setMaximumSize(QSize(90, 16777215));
+        float_entry = new QLineEdit(Dialog);
+        float_entry->setObjectName("float_entry");
+        float_entry->setGeometry(QRect(40, 390, 90, 24));
+        float_entry->setMaximumSize(QSize(90, 16777215));
         widget = new QWidget(Dialog);
         widget->setObjectName("widget");
-        widget->setGeometry(QRect(10, 420, 254, 26));
+        widget->setGeometry(QRect(180, 430, 254, 26));
         horizontalLayout = new QHBoxLayout(widget);
         horizontalLayout->setObjectName("horizontalLayout");
         horizontalLayout->setContentsMargins(0, 0, 0, 0);
@@ -1361,7 +1777,7 @@ public:
 
         widget1 = new QWidget(Dialog);
         widget1->setObjectName("widget1");
-        widget1->setGeometry(QRect(10, 260, 344, 26));
+        widget1->setGeometry(QRect(150, 270, 344, 26));
         horizontalLayout_3 = new QHBoxLayout(widget1);
         horizontalLayout_3->setObjectName("horizontalLayout_3");
         horizontalLayout_3->setContentsMargins(0, 0, 0, 0);
@@ -1477,8 +1893,12 @@ public:
         m1encrate_readvalue->setText(QString());
         m1encct_label->setText(QCoreApplication::translate("Dialog", "M1 Enc Ct", nullptr));
         m1encct_readvalue->setText(QString());
+        m1_enc_dir_rev_indicator->setText(QString());
+        m1_enc_dir_fwd_indicator->setText(QString());
         m2encct_label->setText(QCoreApplication::translate("Dialog", "M2 Enc Ct", nullptr));
         m2encct_readvalue->setText(QString());
+        m2_enc_dir_rev_indicator->setText(QString());
+        m2_enc_dir_fwd_indicator->setText(QString());
         m2encrate_label->setText(QCoreApplication::translate("Dialog", "M2 Enc Rate", nullptr));
         m2encrate_readvalue->setText(QString());
         arduinoconnected_label->setText(QCoreApplication::translate("Dialog", "Arduino", nullptr));
@@ -1507,6 +1927,26 @@ public:
         flag2_readvalue->setText(QString());
         flag2_indicator->setText(QString());
         unkcommand_indicator->setText(QCoreApplication::translate("Dialog", "Unk Command", nullptr));
+        rotratey_label_2->setText(QCoreApplication::translate("Dialog", "Angle Y", nullptr));
+        angley_readvalue->setText(QString());
+        rotratez_label_2->setText(QCoreApplication::translate("Dialog", "Angle Z", nullptr));
+        anglez_readvalue->setText(QString());
+        rotratex_label_2->setText(QCoreApplication::translate("Dialog", "Angle X", nullptr));
+        anglex_readvalue->setText(QString());
+        flag1_indicator_2->setText(QCoreApplication::translate("Dialog", "Flag 1", nullptr));
+        flag3_indicator->setText(QCoreApplication::translate("Dialog", "Flag 3", nullptr));
+        flag2_indicator_2->setText(QCoreApplication::translate("Dialog", "Flag 2", nullptr));
+        flag6_indicator->setText(QCoreApplication::translate("Dialog", "Flag 6", nullptr));
+        flag4_indicator->setText(QCoreApplication::translate("Dialog", "Flag 4", nullptr));
+        flag5_indicator->setText(QCoreApplication::translate("Dialog", "Flag 5", nullptr));
+        flag7_indicator->setText(QCoreApplication::translate("Dialog", "Flag 7", nullptr));
+        flag8_indicator->setText(QCoreApplication::translate("Dialog", "Flag 8", nullptr));
+        d13_indicator->setText(QCoreApplication::translate("Dialog", "D13", nullptr));
+        d11_indicator->setText(QCoreApplication::translate("Dialog", "D11", nullptr));
+        d3_indicator->setText(QCoreApplication::translate("Dialog", "D3", nullptr));
+        int16_entry->setText(QCoreApplication::translate("Dialog", "2", nullptr));
+        int32_entry->setText(QCoreApplication::translate("Dialog", "4", nullptr));
+        float_entry->setText(QCoreApplication::translate("Dialog", "4", nullptr));
         buttonA->setText(QCoreApplication::translate("Dialog", "A", nullptr));
         buttonB->setText(QCoreApplication::translate("Dialog", "B", nullptr));
         buttonC->setText(QCoreApplication::translate("Dialog", "C", nullptr));

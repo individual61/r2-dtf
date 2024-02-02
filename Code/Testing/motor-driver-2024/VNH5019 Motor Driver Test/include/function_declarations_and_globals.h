@@ -23,6 +23,9 @@ void motor_driver_setM1Brake(int brake);
 void motor_driver_setM2Brake(int brake);
 void motor_driver_setBrakes(int m1Brake, int m2Brake);
 
+//void updateEncoder1();
+void updateEncoder2();
+
 float motor_driver_getM1CurrentMilliamps(void);
 float motor_driver_getM2CurrentMilliamps(void);
 
@@ -37,42 +40,81 @@ extern void sendSerialData();
 
 extern void readSerialData();
 
+extern int xx_serial_message_buffer_size;
+///////////////////////////////////////////////
+
+
+// 1 byte
 extern bool status_motor1_ina;
-extern bool  status_motor1_inb;
-extern bool  status_motor1_endiag;
-extern bool  status_motor2_ina;
-extern bool  status_motor2_inb;
-extern bool  status_motor2_endiag;
-extern bool  status_flag_1;
-extern bool  status_flag_2;
+extern bool status_motor1_inb;
+extern bool status_motor1_endiag;
+extern bool status_motor2_ina;
+extern bool status_motor2_inb;
+extern bool status_motor2_endiag;
+extern volatile bool status_m1_rot_dir;
+extern volatile bool status_m2_rot_dir;
 
-extern bool  status_txu_oe;
-extern bool  status_d3;
-extern bool  status_d11;
-extern bool  status_d13;
-extern bool  status_rgb_led_r;
-extern bool  status_rgb_led_g;
-extern bool  status_rgb_led_b;
-extern bool  status_flag_3;
+// 1 byte
+extern bool status_txu_oe;
+extern bool status_d3;
+extern bool status_d11;
+extern bool status_d13;
+extern bool status_rgb_led_r;
+extern bool status_rgb_led_g;
+extern bool status_rgb_led_b;
+extern bool status_flag_unknown_message;
 
-extern uint8_t status_motor1_pwm;
-extern uint8_t status_motor1_cs;
+// 1 byte
+extern bool status_flag_1;
+extern bool status_flag_2;
+extern bool status_flag_3;
+extern bool status_flag_4;
+extern bool status_flag_5;
+extern bool status_flag_6;
+extern bool status_flag_7;
+extern bool status_flag_8;
 
-extern uint8_t status_motor2_pwm;
-extern uint8_t status_motor2_cs;
+// 4 bytes
+extern uint16_t status_motor1_pwm;
+extern uint16_t status_motor1_cs;
 
-extern uint8_t status_m1_enc_count;
-extern uint8_t status_m1_rot_rate;
+// 4 bytes
+extern uint16_t status_motor2_pwm;
+extern uint16_t status_motor2_cs;
 
-extern uint8_t status_m2_enc_count;
-extern uint8_t status_m2_rot_rate;
+// 8 bytes
+extern int32_t status_m1_enc_count;
+extern uint32_t status_m1_rot_rate;
 
-extern int8_t status_acc_x;
-extern int8_t status_acc_y;
-extern int8_t status_acc_z;
+// 8 bytes
+extern int32_t status_m2_enc_count;
+extern uint32_t status_m2_rot_rate;
 
-extern int8_t status_ang_rate_x;
-extern int8_t status_ang_rate_y;
-extern int8_t status_ang_rate_z;
+// 12 bytes
+extern float status_acc_x;
+extern float status_acc_y;
+extern float status_acc_z;
+
+// 12 bytes
+extern float status_angle_x;
+extern float status_angle_y;
+extern float status_angle_z;
+
+// 12 bytes
+extern float status_ang_rate_x;
+extern float status_ang_rate_y;
+extern float status_ang_rate_z;
+
+///////////////////////////////////////////////
+
+extern volatile int32_t encoderCount1; // Encoder count for motor 1
+extern volatile bool encoderDirection1; // Direction flag for motor 1
+extern int32_t m1_enc_count_last;
+
+extern volatile int32_t encoderCount2; // Encoder count for motor 2
+extern volatile bool encoderDirection2; // Direction flag for motor 2
+extern int32_t m2_enc_count_last;
+
+
 
 #endif

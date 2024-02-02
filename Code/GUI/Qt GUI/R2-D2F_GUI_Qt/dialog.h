@@ -35,6 +35,8 @@ private slots:
     void m1brake_setbutton_clicked();
     void m2brake_setbutton_clicked();
 
+    void txu_setbutton_clicked();
+
     void stopall_setbutton_clicked();
 
     void unknowncommand_setbutton_clicked();

@@ -35,7 +35,7 @@
 #define PWM_FREQUENCY 5000
 
 // Total bytes required for serial send buffer
-#define SERIAL_MESSAGE_BUFFER_SIZE 16
+#define SERIAL_MESSAGE_BUFFER_SIZE 63
 #define SERIAL_HEADER 0x3E // decimal 62 '>'
 #define SERIAL_PAD 0x5F // decimal 95 '_'
 #define SERIAL_SEND_BUFFER_SIZE (2*SERIAL_MESSAGE_BUFFER_SIZE + 2)

@@ -3,6 +3,76 @@
 
 /* Modified from https://github.com/pololu/dual-vnh5019-motor-shield to work with Arduino Nano 33 BLE fast PWM */
 
+void updateEncoder1()
+{
+    // Detect direction based on A and B channel signals
+    bool aState = digitalRead(MOTOR_ENCODER_1A);
+    bool bState = digitalRead(MOTOR_ENCODER_1B);
+
+    if ((aState && !bState) || (!aState && bState))
+    {
+        encoderDirection1 = !encoderDirection1;
+    }
+
+    // Update encoder count based on direction
+    if (encoderDirection1)
+    {
+        encoderCount1++;
+    }
+    else
+    {
+        encoderCount1--;
+    }
+
+    if (encoderCount1 == INT32_MAX)
+    {
+        encoderCount1 = 0;
+    }
+    else if (encoderCount1 == INT32_MIN)
+    {
+        encoderCount1 = INT32_MAX;
+    }
+    // no longer volatile
+ //   status_m1_rot_dir = encoderDirection1;
+  //  status_m1_enc_count = encoderCount1;
+}
+
+void updateEncoder2()
+{
+    // Detect direction based on A and B channel signals
+    bool aState = digitalRead(MOTOR_ENCODER_2A);
+    bool bState = digitalRead(MOTOR_ENCODER_2B);
+
+    if ((aState && !bState) || (!aState && bState))
+    {
+        encoderDirection2 = !encoderDirection2;
+    }
+
+    // Update encoder count based on direction
+    if (encoderDirection2)
+    {
+        encoderCount2++;
+    }
+    else
+    {
+        encoderCount2--;
+    }
+
+    if (encoderCount2 == INT32_MAX)
+    {
+        encoderCount2 = 0;
+    }
+    else if (encoderCount2 == INT32_MIN)
+    {
+        encoderCount2 = INT32_MAX;
+    }
+
+// no longer volatile
+//    status_m2_enc_count = encoderCount2;
+
+//    status_m2_rot_rate = encoderDirection2;
+}
+
 void motor_driver_init(void)
 {
     // Define pinMode for the pins and set the frequency for timer1.
@@ -19,11 +89,23 @@ void motor_driver_init(void)
     pinMode(MOTOR_DRIVER_PIN_EN2DIAG2, INPUT);
     pinMode(MOTOR_DRIVER_PIN_CS2, INPUT);
 
+    pinMode(MOTOR_ENCODER_1A, INPUT);
+    pinMode(MOTOR_ENCODER_1B, INPUT);
+    attachInterrupt(digitalPinToInterrupt(MOTOR_ENCODER_1A), updateEncoder1, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(MOTOR_ENCODER_1B), updateEncoder1, CHANGE);
+
+    pinMode(MOTOR_ENCODER_2A, INPUT);
+    pinMode(MOTOR_ENCODER_2B, INPUT);
+    attachInterrupt(digitalPinToInterrupt(MOTOR_ENCODER_2A), updateEncoder2, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(MOTOR_ENCODER_2B), updateEncoder2, CHANGE);
+
     pwmPin1.period(1.0 / PWM_FREQUENCY);
     pwmPin2.period(1.0 / PWM_FREQUENCY);
 
     digitalWrite(MOTOR_DRIVER_PIN_INA1, LOW); // Make the motor coast no
     digitalWrite(MOTOR_DRIVER_PIN_INB1, LOW); // matter which direction it is spinning.
+    digitalWrite(MOTOR_DRIVER_PIN_INA2, LOW); // Make the motor coast no
+    digitalWrite(MOTOR_DRIVER_PIN_INB2, LOW); // matter which direction it is spinning.
     pwmPin1.write(0.0);
     pwmPin2.write(0.0);
 }
@@ -87,8 +169,6 @@ void motor_driver_setM2_PWM(int speed)
 
     pwmPin2.write(speed / 255.0);
 }
-
-
 
 // Set speed for motor 1, speed is a number between /-255/ and /255/
 void motor_driver_setM1Speed(int speed)
