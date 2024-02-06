@@ -23,8 +23,20 @@ void motor_driver_setM1Brake(int brake);
 void motor_driver_setM2Brake(int brake);
 void motor_driver_setBrakes(int m1Brake, int m2Brake);
 
-//void updateEncoder1();
+void updateEncoder1();
 void updateEncoder2();
+
+extern volatile bool enc_state_1A;
+extern volatile bool enc_state_1B;
+extern volatile bool enc_state_2A;
+extern volatile bool enc_state_2B;
+
+extern volatile bool enc_state_1A_prev;
+extern volatile bool enc_state_1B_prev;
+extern volatile bool enc_state_2A_prev;
+extern volatile bool enc_state_2B_prev;
+
+extern volatile bool interrupt_called;
 
 float motor_driver_getM1CurrentMilliamps(void);
 float motor_driver_getM2CurrentMilliamps(void);
@@ -32,11 +44,15 @@ float motor_driver_getM2CurrentMilliamps(void);
 unsigned char motor_driver_getM1Fault(void);
 unsigned char motor_driver_getM2Fault(void);
 
-extern void sendBool(bool value);
-extern void sendInt(int8_t value);
-extern void sendUnsignedInt(uint8_t value);
-extern void sendFloat(float value);
-extern void sendSerialData();
+//extern void sendBool(bool value);
+//extern void sendInt(int8_t value);
+//extern void sendUnsignedInt(uint8_t value);
+//extern void sendFloat(float value);
+
+extern void sendSerialData(byte message_type);
+extern byte messageBuffer[128]; 
+extern byte sendBuffer[128];    
+
 
 extern void readSerialData();
 
@@ -84,11 +100,11 @@ extern uint16_t status_motor2_cs;
 
 // 8 bytes
 extern int32_t status_m1_enc_count;
-extern uint32_t status_m1_rot_rate;
+extern int32_t status_m1_rot_rate;
 
 // 8 bytes
 extern int32_t status_m2_enc_count;
-extern uint32_t status_m2_rot_rate;
+extern int32_t status_m2_rot_rate;
 
 // 12 bytes
 extern float status_acc_x;

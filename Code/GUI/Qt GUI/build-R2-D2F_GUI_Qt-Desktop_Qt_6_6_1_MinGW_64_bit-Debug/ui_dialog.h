@@ -222,7 +222,7 @@ public:
     QRadioButton *d13_indicator;
     QRadioButton *d11_indicator;
     QRadioButton *d3_indicator;
-    QLineEdit *int16_entry;
+    QLineEdit *receiveserial_while_count_indicator;
     QLineEdit *int32_entry;
     QLineEdit *float_entry;
     QWidget *widget;
@@ -1742,10 +1742,10 @@ public:
 "}\n"
 ""));
         d3_indicator->setAutoExclusive(false);
-        int16_entry = new QLineEdit(Dialog);
-        int16_entry->setObjectName("int16_entry");
-        int16_entry->setGeometry(QRect(40, 330, 90, 24));
-        int16_entry->setMaximumSize(QSize(90, 16777215));
+        receiveserial_while_count_indicator = new QLineEdit(Dialog);
+        receiveserial_while_count_indicator->setObjectName("receiveserial_while_count_indicator");
+        receiveserial_while_count_indicator->setGeometry(QRect(40, 330, 90, 24));
+        receiveserial_while_count_indicator->setMaximumSize(QSize(90, 16777215));
         int32_entry = new QLineEdit(Dialog);
         int32_entry->setObjectName("int32_entry");
         int32_entry->setGeometry(QRect(40, 360, 90, 24));
@@ -1944,7 +1944,7 @@ public:
         d13_indicator->setText(QCoreApplication::translate("Dialog", "D13", nullptr));
         d11_indicator->setText(QCoreApplication::translate("Dialog", "D11", nullptr));
         d3_indicator->setText(QCoreApplication::translate("Dialog", "D3", nullptr));
-        int16_entry->setText(QCoreApplication::translate("Dialog", "2", nullptr));
+        receiveserial_while_count_indicator->setText(QCoreApplication::translate("Dialog", "2", nullptr));
         int32_entry->setText(QCoreApplication::translate("Dialog", "4", nullptr));
         float_entry->setText(QCoreApplication::translate("Dialog", "4", nullptr));
         buttonA->setText(QCoreApplication::translate("Dialog", "A", nullptr));

@@ -180,10 +180,6 @@ void readSerialData()
         {
             status_flag_unknown_message = false;
         }
-             else if (!strcmp(receivedCommand, "TXS")) // Motor 2 speed (PWM and INX direction)
-        {
-            xx_serial_message_buffer_size = integerFromPC;
-        }
         /*else if (!strcmp(receivedCommand, "X"))
         {
           //
@@ -203,17 +199,41 @@ void readSerialData()
 //                          AABBXBXBXB
 //                          AAABABXBXB
 
-void sendSerialData()
+// Message:                 XXXXX
+// Padded message:          AANXXBXBXBXB
+// N is packet index
+
+void sendSerialData(byte message_type)
 {
-   // if (Serial.availableForWrite() >= 63)
-   // {
-        // Create a buffer to hold the data
-        byte messageBuffer[SERIAL_MESSAGE_BUFFER_SIZE]; // Adjust the buffer size as needed based on your data
+    uint send_buffer_size = 0;
+    // Create a buffer to hold the data
+    if(message_type == 0)
+    {
+        send_buffer_size = SERIAL_SEND_BUFFER_SIZE_0;
+    }
+        if(message_type == 1)
+    {
+        send_buffer_size = SERIAL_SEND_BUFFER_SIZE_1;
+    }
+        if(message_type == 2)
+    {
+        send_buffer_size = SERIAL_SEND_BUFFER_SIZE_2;
+    }
+    
 
-        // Index to keep track of the current position in the buffer
-        int index = 0;
+    // Index to keep track of the current position in the buffer
+    int index = 0;
 
-        // Pack the boolean values into a single byte
+    if (message_type == 0)
+    {
+        index = 0;
+
+        // 1 byte
+        messageBuffer[index] = (byte) message_type;
+        index++;
+        // Total = 1
+
+        // 1 byte
         byte boolsPacked = (status_motor1_ina ? 1 : 0) |
                            (status_motor1_inb ? 2 : 0) |
                            (status_motor1_endiag ? 4 : 0) |
@@ -224,8 +244,9 @@ void sendSerialData()
                            (status_m2_rot_dir ? 128 : 0);
         // Store the packed boolean value in the buffer
         messageBuffer[index++] = boolsPacked;
+        // Total = 2
 
-        // Pack the boolean values into a single byte
+        // 1 byte
         boolsPacked = (status_txu_oe ? 1 : 0) |
                       (status_d3 ? 2 : 0) |
                       (status_d11 ? 4 : 0) |
@@ -236,8 +257,9 @@ void sendSerialData()
                       (status_flag_unknown_message ? 128 : 0);
         // Store the packed boolean value in the buffer
         messageBuffer[index++] = boolsPacked;
+        // Total = 3
 
-        // Pack the boolean values into a single byte
+        // 1 byte
         boolsPacked = (status_flag_1 ? 1 : 0) |
                       (status_flag_2 ? 2 : 0) |
                       (status_flag_3 ? 4 : 0) |
@@ -248,64 +270,108 @@ void sendSerialData()
                       (status_flag_8 ? 128 : 0);
         // Store the packed boolean value in the buffer
         messageBuffer[index++] = boolsPacked;
-
+        // Total = 4
+        
         memcpy(messageBuffer + index, &status_motor1_pwm, sizeof(uint16_t));
         index += sizeof(uint16_t);
+        // Total = 6
+
         memcpy(messageBuffer + index, &status_motor1_cs, sizeof(uint16_t));
         index += sizeof(uint16_t);
+        // Total = 8
 
         memcpy(messageBuffer + index, &status_motor2_pwm, sizeof(uint16_t));
         index += sizeof(uint16_t);
+        // Total = 10
+
         memcpy(messageBuffer + index, &status_motor2_cs, sizeof(uint16_t));
         index += sizeof(uint16_t);
+        // Total = 12
 
         memcpy(messageBuffer + index, &status_m1_enc_count, sizeof(int32_t));
         index += sizeof(int32_t);
-        memcpy(messageBuffer + index, &status_m1_rot_rate, sizeof(uint32_t));
-        index += sizeof(uint32_t);
+        // Total = 16
+
+        memcpy(messageBuffer + index, &status_m1_rot_rate, sizeof(int32_t));
+        index += sizeof(int32_t);
+        // Total = 20
+
         memcpy(messageBuffer + index, &status_m2_enc_count, sizeof(int32_t));
         index += sizeof(int32_t);
-        memcpy(messageBuffer + index, &status_m2_rot_rate, sizeof(uint32_t));
-        index += sizeof(uint32_t);
+        // Total = 24
+
+        memcpy(messageBuffer + index, &status_m2_rot_rate, sizeof(int32_t));
+        index += sizeof(int32_t);
+        // Total = 28
+
+    }
+    else if (message_type == 1)
+    {
+        index = 0;
+        messageBuffer[index] = (byte) message_type;
+        index++;
+        // Total = 1
 
         memcpy(messageBuffer + index, &status_acc_x, sizeof(float));
         index += sizeof(float);
+        // Total = 5
+
         memcpy(messageBuffer + index, &status_acc_y, sizeof(float));
         index += sizeof(float);
+        // Total = 9
+
         memcpy(messageBuffer + index, &status_acc_z, sizeof(float));
         index += sizeof(float);
+        // Total = 13
+
 
         memcpy(messageBuffer + index, &status_angle_x, sizeof(float));
         index += sizeof(float);
-        memcpy(messageBuffer + index, &status_ang_rate_y, sizeof(float));
+        // Total = 17
+
+        memcpy(messageBuffer + index, &status_angle_y, sizeof(float));
         index += sizeof(float);
-        memcpy(messageBuffer + index, &status_ang_rate_z, sizeof(float));
+        // Total = 21
+
+        memcpy(messageBuffer + index, &status_angle_z, sizeof(float));
         index += sizeof(float);
+        // Total = 25
+
+    }
+    else if (message_type == 2)
+    {
+        index = 0;
+        messageBuffer[index] = (byte) message_type;
+        index++;
+        // Total = 1
 
         memcpy(messageBuffer + index, &status_ang_rate_x, sizeof(float));
         index += sizeof(float);
+        // Total = 5
+
         memcpy(messageBuffer + index, &status_ang_rate_y, sizeof(float));
         index += sizeof(float);
+        // Total = 9
+
         memcpy(messageBuffer + index, &status_ang_rate_z, sizeof(float));
         index += sizeof(float);
+        // Total = 13
 
-        // messageBuffer[index++] = '\n';
+    }
 
-        byte sendBuffer[SERIAL_SEND_BUFFER_SIZE]; // Adjust the buffer size as needed based on your data
 
-        sendBuffer[0] = (byte)SERIAL_HEADER;
-        sendBuffer[1] = (byte)SERIAL_HEADER;
+    sendBuffer[0] = (byte)SERIAL_HEADER;
+    sendBuffer[1] = (byte)SERIAL_HEADER;
 
-        for (int i = 0; i < SERIAL_MESSAGE_BUFFER_SIZE; i++)
-        {
-            sendBuffer[2 + i * 2] = messageBuffer[i];
-            sendBuffer[3 + i * 2] = (byte)SERIAL_PAD;
-        }
+    for (uint i = 0; i < send_buffer_size; i++)
+    {
+        sendBuffer[2 + i * 2] = messageBuffer[i];
+        sendBuffer[3 + i * 2] = (byte)SERIAL_PAD;
+    }
 
-        // Send the entire buffer with a single call to Serial.write()
-        Serial.write(sendBuffer, SERIAL_SEND_BUFFER_SIZE);
-   // }
-//   Serial.print("\t");
-//   Serial.print(Serial.availableForWrite());
-   //Serial.println(" ");
+
+    // Send the entire buffer with a single call to Serial.write()
+    Serial.write(sendBuffer, send_buffer_size);
+
+
 }

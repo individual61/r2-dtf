@@ -57,6 +57,8 @@ private slots:
 
     void readSerial();
 
+
+
 private:
     Ui::Dialog *ui;
     QSerialPort *arduino;
@@ -68,7 +70,9 @@ private:
     QString arduino_port_name;
     bool arduino_is_available;
 
-    void reverseAndCopy(float* destination, const char* source);
+    //void reverseAndCopy(float* destination, const char* source);
+    void processMessage(QByteArray message);
+    //QElapsedTimer timer;
 
 };
 #endif // DIALOG_H

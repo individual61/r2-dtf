@@ -2766,7 +2766,7 @@ QRadioButton::indicator:unchecked {
     <bool>false</bool>
    </property>
   </widget>
-  <widget class="QLineEdit" name="int16_entry">
+  <widget class="QLineEdit" name="receiveserial_while_count_indicator">
    <property name="geometry">
     <rect>
      <x>40</x>

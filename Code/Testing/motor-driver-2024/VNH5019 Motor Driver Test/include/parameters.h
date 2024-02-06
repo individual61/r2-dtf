@@ -32,13 +32,22 @@
 #define MOTOR_DRIVER_PIN_EN2DIAG2 12 // M1EN/DIAG	Motor 2 enable input/fault output
 #define MOTOR_DRIVER_PIN_CS2 A0      // M1CS	    Motor 2 current sense output
 
-#define PWM_FREQUENCY 5000
+#define PWM_FREQUENCY 15000
 
 // Total bytes required for serial send buffer
-#define SERIAL_MESSAGE_BUFFER_SIZE 63
+
+#define SERIAL_MESSAGE_BUFFER_SIZE_0 28
+#define SERIAL_SEND_BUFFER_SIZE_0 (2*SERIAL_MESSAGE_BUFFER_SIZE_0 + 2 + 2)
+
+#define SERIAL_MESSAGE_BUFFER_SIZE_1 25
+#define SERIAL_SEND_BUFFER_SIZE_1 (2*SERIAL_MESSAGE_BUFFER_SIZE_1 + 2 + 2)
+
+#define SERIAL_MESSAGE_BUFFER_SIZE_2 13
+#define SERIAL_SEND_BUFFER_SIZE_2 (2*SERIAL_MESSAGE_BUFFER_SIZE_2 + 2 + 2)
+
 #define SERIAL_HEADER 0x3E // decimal 62 '>'
 #define SERIAL_PAD 0x5F // decimal 95 '_'
-#define SERIAL_SEND_BUFFER_SIZE (2*SERIAL_MESSAGE_BUFFER_SIZE + 2)
+
 
 #define SERIAL_BINARY 1
 

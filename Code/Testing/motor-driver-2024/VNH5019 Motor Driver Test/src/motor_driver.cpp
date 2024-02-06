@@ -5,16 +5,85 @@
 
 void updateEncoder1()
 {
-    // Detect direction based on A and B channel signals
-    bool aState = digitalRead(MOTOR_ENCODER_1A);
-    bool bState = digitalRead(MOTOR_ENCODER_1B);
+    //interrupt_called = !interrupt_called;
 
-    if ((aState && !bState) || (!aState && bState))
+    // Detect direction based on A and B channel signals
+    enc_state_1A = digitalRead(MOTOR_ENCODER_1A);
+    enc_state_1B = digitalRead(MOTOR_ENCODER_1B);
+
+    bool A_changed = 0;
+    if (enc_state_1A != enc_state_1A_prev)
     {
-        encoderDirection1 = !encoderDirection1;
+        // A change
+        // A_changed = true;
+        enc_state_1A_prev = enc_state_1A;
+        if (enc_state_1A == true)
+        {
+            // A rising change
+            if (enc_state_1B == false)
+            {
+                // B is low, therefore A leads B
+                encoderDirection1 = true;
+            }
+            else
+            {
+                // B is high, therefore, B leads A
+                encoderDirection1 = false;
+            }
+        }
+        else
+        {
+            // A falling change
+            if (enc_state_1B == true)
+            {
+                // B is high, therefore A leads B
+                encoderDirection1 = true;
+            }
+            else
+            {
+                // B is low, therefore, B leads A
+                encoderDirection1 = false;
+            }
+        }
     }
 
-    // Update encoder count based on direction
+    bool B_changed = 0;
+    if (enc_state_1B != enc_state_1B_prev)
+    {
+        // B change
+        enc_state_1B_prev = enc_state_1B;
+
+        if (enc_state_1B == true)
+        {
+            // B rising change
+            if (enc_state_1A == true)
+            {
+                // A is high, therefore A leads B
+                encoderDirection1 = true;
+            }
+            else
+            {
+                // A is low, therefore, B leads A
+                encoderDirection1 = false;
+            }
+        }
+        else
+        {
+            // B falling change
+            if (enc_state_1A == false)
+            {
+                // A is low, therefore A leads B
+                encoderDirection1 = true;
+            }
+            else
+            {
+                // A is high, therefore, B leads A
+                encoderDirection1 = false;
+            }
+        }
+    }
+
+        // Update encoder count based on direction
     if (encoderDirection1)
     {
         encoderCount1++;
@@ -32,20 +101,87 @@ void updateEncoder1()
     {
         encoderCount1 = INT32_MAX;
     }
-    // no longer volatile
- //   status_m1_rot_dir = encoderDirection1;
-  //  status_m1_enc_count = encoderCount1;
+
 }
 
 void updateEncoder2()
 {
-    // Detect direction based on A and B channel signals
-    bool aState = digitalRead(MOTOR_ENCODER_2A);
-    bool bState = digitalRead(MOTOR_ENCODER_2B);
+    //interrupt_called = !interrupt_called;
 
-    if ((aState && !bState) || (!aState && bState))
+    // Detect direction based on A and B channel signals
+    enc_state_2A = digitalRead(MOTOR_ENCODER_2A);
+    enc_state_2B = digitalRead(MOTOR_ENCODER_2B);
+
+    bool A_changed = 0;
+    if (enc_state_2A != enc_state_2A_prev)
     {
-        encoderDirection2 = !encoderDirection2;
+        // A change
+        // A_changed = true;
+        enc_state_2A_prev = enc_state_2A;
+        if (enc_state_2A == true)
+        {
+            // A rising change
+            if (enc_state_2B == false)
+            {
+                // B is low, therefore A leads B
+                encoderDirection2 = true;
+            }
+            else
+            {
+                // B is high, therefore, B leads A
+                encoderDirection2 = false;
+            }
+        }
+        else
+        {
+            // A falling change
+            if (enc_state_2B == true)
+            {
+                // B is high, therefore A leads B
+                encoderDirection2 = true;
+            }
+            else
+            {
+                // B is low, therefore, B leads A
+                encoderDirection2 = false;
+            }
+        }
+    }
+
+    bool B_changed = 0;
+    if (enc_state_2B != enc_state_2B_prev)
+    {
+        // B change
+        enc_state_2B_prev = enc_state_2B;
+
+        if (enc_state_2B == true)
+        {
+            // B rising change
+            if (enc_state_2A == true)
+            {
+                // A is high, therefore A leads B
+                encoderDirection2 = true;
+            }
+            else
+            {
+                // A is low, therefore, B leads A
+                encoderDirection2 = false;
+            }
+        }
+        else
+        {
+            // B falling change
+            if (enc_state_2A == false)
+            {
+                // A is low, therefore A leads B
+                encoderDirection2 = true;
+            }
+            else
+            {
+                // A is high, therefore, B leads A
+                encoderDirection2 = false;
+            }
+        }
     }
 
     // Update encoder count based on direction
@@ -66,11 +202,6 @@ void updateEncoder2()
     {
         encoderCount2 = INT32_MAX;
     }
-
-// no longer volatile
-//    status_m2_enc_count = encoderCount2;
-
-//    status_m2_rot_rate = encoderDirection2;
 }
 
 void motor_driver_init(void)
