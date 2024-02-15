@@ -1246,7 +1246,7 @@ QRadioButton::indicator:unchecked {
   <widget class="QWidget" name="layoutWidget_21">
    <property name="geometry">
     <rect>
-     <x>170</x>
+     <x>10</x>
      <y>320</y>
      <width>161</width>
      <height>26</height>
@@ -1281,7 +1281,7 @@ QRadioButton::indicator:unchecked {
   <widget class="QWidget" name="layoutWidget_22">
    <property name="geometry">
     <rect>
-     <x>170</x>
+     <x>10</x>
      <y>350</y>
      <width>161</width>
      <height>26</height>
@@ -1316,7 +1316,7 @@ QRadioButton::indicator:unchecked {
   <widget class="QWidget" name="layoutWidget_23">
    <property name="geometry">
     <rect>
-     <x>170</x>
+     <x>10</x>
      <y>380</y>
      <width>161</width>
      <height>26</height>
@@ -1351,7 +1351,7 @@ QRadioButton::indicator:unchecked {
   <widget class="QWidget" name="layoutWidget_24">
    <property name="geometry">
     <rect>
-     <x>330</x>
+     <x>170</x>
      <y>380</y>
      <width>161</width>
      <height>26</height>
@@ -1386,7 +1386,7 @@ QRadioButton::indicator:unchecked {
   <widget class="QWidget" name="layoutWidget_25">
    <property name="geometry">
     <rect>
-     <x>330</x>
+     <x>170</x>
      <y>350</y>
      <width>161</width>
      <height>26</height>
@@ -1421,7 +1421,7 @@ QRadioButton::indicator:unchecked {
   <widget class="QWidget" name="layoutWidget_26">
    <property name="geometry">
     <rect>
-     <x>330</x>
+     <x>170</x>
      <y>320</y>
      <width>161</width>
      <height>26</height>
@@ -1440,6 +1440,12 @@ QRadioButton::indicator:unchecked {
     </item>
     <item>
      <widget class="QLineEdit" name="rotratex_readvalue">
+      <property name="minimumSize">
+       <size>
+        <width>90</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="maximumSize">
        <size>
         <width>90</width>
@@ -2266,9 +2272,9 @@ QRadioButton::indicator:unchecked {
   <widget class="QWidget" name="layoutWidget_32">
    <property name="geometry">
     <rect>
-     <x>490</x>
+     <x>330</x>
      <y>350</y>
-     <width>161</width>
+     <width>275</width>
      <height>26</height>
     </rect>
    </property>
@@ -2285,6 +2291,41 @@ QRadioButton::indicator:unchecked {
     </item>
     <item>
      <widget class="QLineEdit" name="angley_readvalue">
+      <property name="minimumSize">
+       <size>
+        <width>90</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>90</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="magy_label">
+      <property name="text">
+       <string>Mag Y</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="magy_readvalue">
+      <property name="minimumSize">
+       <size>
+        <width>90</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="maximumSize">
        <size>
         <width>90</width>
@@ -2301,9 +2342,9 @@ QRadioButton::indicator:unchecked {
   <widget class="QWidget" name="layoutWidget_33">
    <property name="geometry">
     <rect>
-     <x>490</x>
+     <x>330</x>
      <y>380</y>
-     <width>161</width>
+     <width>275</width>
      <height>26</height>
     </rect>
    </property>
@@ -2320,6 +2361,41 @@ QRadioButton::indicator:unchecked {
     </item>
     <item>
      <widget class="QLineEdit" name="anglez_readvalue">
+      <property name="minimumSize">
+       <size>
+        <width>90</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>90</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="magz_label">
+      <property name="text">
+       <string>Mag Z</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="magz_readvalue">
+      <property name="minimumSize">
+       <size>
+        <width>90</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="maximumSize">
        <size>
         <width>90</width>
@@ -2336,9 +2412,9 @@ QRadioButton::indicator:unchecked {
   <widget class="QWidget" name="layoutWidget_34">
    <property name="geometry">
     <rect>
-     <x>490</x>
+     <x>330</x>
      <y>320</y>
-     <width>161</width>
+     <width>275</width>
      <height>26</height>
     </rect>
    </property>
@@ -2355,6 +2431,41 @@ QRadioButton::indicator:unchecked {
     </item>
     <item>
      <widget class="QLineEdit" name="anglex_readvalue">
+      <property name="minimumSize">
+       <size>
+        <width>90</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>90</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="magx_label">
+      <property name="text">
+       <string>Mag X</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="magx_readvalue">
+      <property name="minimumSize">
+       <size>
+        <width>90</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="maximumSize">
        <size>
         <width>90</width>
@@ -2769,8 +2880,8 @@ QRadioButton::indicator:unchecked {
   <widget class="QLineEdit" name="receiveserial_while_count_indicator">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>330</y>
+     <x>540</x>
+     <y>10</y>
      <width>90</width>
      <height>24</height>
     </rect>
@@ -2788,8 +2899,8 @@ QRadioButton::indicator:unchecked {
   <widget class="QLineEdit" name="int32_entry">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>360</y>
+     <x>540</x>
+     <y>40</y>
      <width>90</width>
      <height>24</height>
     </rect>
@@ -2807,8 +2918,8 @@ QRadioButton::indicator:unchecked {
   <widget class="QLineEdit" name="float_entry">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>390</y>
+     <x>540</x>
+     <y>70</y>
      <width>90</width>
      <height>24</height>
     </rect>

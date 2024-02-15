@@ -11,7 +11,6 @@ void updateEncoder1()
     enc_state_1A = digitalRead(MOTOR_ENCODER_1A);
     enc_state_1B = digitalRead(MOTOR_ENCODER_1B);
 
-    bool A_changed = 0;
     if (enc_state_1A != enc_state_1A_prev)
     {
         // A change
@@ -47,7 +46,7 @@ void updateEncoder1()
         }
     }
 
-    bool B_changed = 0;
+
     if (enc_state_1B != enc_state_1B_prev)
     {
         // B change
@@ -112,7 +111,7 @@ void updateEncoder2()
     enc_state_2A = digitalRead(MOTOR_ENCODER_2A);
     enc_state_2B = digitalRead(MOTOR_ENCODER_2B);
 
-    bool A_changed = 0;
+
     if (enc_state_2A != enc_state_2A_prev)
     {
         // A change
@@ -148,7 +147,7 @@ void updateEncoder2()
         }
     }
 
-    bool B_changed = 0;
+
     if (enc_state_2B != enc_state_2B_prev)
     {
         // B change

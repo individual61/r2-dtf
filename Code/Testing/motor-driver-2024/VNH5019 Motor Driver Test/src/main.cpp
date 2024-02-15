@@ -24,6 +24,8 @@ volatile bool enc_state_1B_prev = 0;
 volatile bool enc_state_2A_prev = 0;
 volatile bool enc_state_2B_prev = 0;
 
+// bool imu_active = 0;
+
 /////////////////////////////////////////////////////////
 // Remember to update SERIAL_SEND_BUFFER_SIZE if this is changed
 /////////////////////////////////////////////////////////
@@ -102,15 +104,76 @@ float status_angle_z = 0;
 // [Message 2]
 
 // 12 bytes / 24 /
-float status_ang_rate_x = 0;
-float status_ang_rate_y = 0;
-float status_ang_rate_z = 0;
+float status_gyr_x = 0;
+float status_gyr_y = 0;
+float status_gyr_z = 0;
 
-// [12 message bytes]
+// 12 bytes / 24 /
+float status_mag_x = 0;
+float status_mag_y = 0;
+float status_mag_z = 0;
+
+// [24 message bytes]
+
+////
+
+float status_cal_acc_x;
+float status_cal_acc_y;
+float status_cal_acc_z;
+
+float status_cal_gyr_x;
+float status_cal_gyr_y;
+float status_cal_gyr_z;
+
+float status_cal_mag_x;
+float status_cal_mag_y;
+float status_cal_mag_z;
 
 /////////////////////////////////////////////////////////
 // End of status data sent over serial
 /////////////////////////////////////////////////////////
+
+float status_imu_roll;
+float status_imu_pitch;
+float status_imu_yaw;
+
+float status_imu_quat_w;
+float status_imu_quat_x;
+float status_imu_quat_y;
+float status_imu_quat_z;
+
+#if IMU_MAHONY == 1
+Adafruit_Mahony filter;
+#endif
+
+#if IMU_MADGWICK == 1
+Adafruit_Madgwick filter;
+#endif
+
+#if IMU_NXP == 1
+Adafruit_NXPSensorFusion filter;
+#endif
+
+#if IMU_FUSION
+#define FUSION_SAMPLE_RATE (100) // replace this with actual sample rate
+
+const FusionMatrix gyroscopeMisalignment = {1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+const FusionVector gyroscopeSensitivity = {1.0f, 1.0f, 1.0f};
+const FusionVector gyroscopeOffset = {0.0f, 0.0f, 0.0f};
+const FusionMatrix accelerometerMisalignment = {1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+const FusionVector accelerometerSensitivity = {1.0f, 1.0f, 1.0f};
+const FusionVector accelerometerOffset = {0.0f, 0.0f, 0.0f};
+const FusionMatrix softIronMatrix = {1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+const FusionVector hardIronOffset = {0.0f, 0.0f, 0.0f};
+
+// Initialise algorithms
+FusionOffset offset;
+FusionAhrs ahrs;
+
+#endif
+
+///////////////////////////////////////////////////////
+//////////////// SETUP ///////////////////////////////
 
 void setup()
 {
@@ -137,27 +200,57 @@ void setup()
 
   ////// Motor Driver
   motor_driver_init();
-  // pinMode(MOTOR_ENCODER_1A, INPUT);
-  // pinMode(MOTOR_ENCODER_1B, INPUT);
-  // pinMode(MOTOR_ENCODER_2A, INPUT);
-  // pinMode(MOTOR_ENCODER_2B, INPUT);
+
+  imu_active = 1;
+  if (!imu_initialize())
+  {
+    Serial.println(F("IMU failed to initialize."));
+    pinMode(LED_RED, OUTPUT);
+    digitalWrite(LED_RED, LOW);
+  }
+
+#if (IMU_MADGWICK || IMU_MAHONY || IMU_NXP)
+  filter.begin(IMU_RATE);
+#endif
+
+#if IMU_FUSION
+
+  FusionOffsetInitialise(&offset, FUSION_SAMPLE_RATE);
+  FusionAhrsInitialise(&ahrs);
+
+  // Set AHRS algorithm settings
+  const FusionAhrsSettings settings = {
+      .convention = FusionConventionNwu,
+      .gain = 0.5f,
+      .gyroscopeRange = 2000.0f, /* replace this with actual gyroscope range in degrees/s */
+      .accelerationRejection = 10.0f,
+      .magneticRejection = 10.0f,
+      .recoveryTriggerPeriod = 5 * FUSION_SAMPLE_RATE, /* 5 seconds */
+  };
+  FusionAhrsSetSettings(&ahrs, &settings);
+
+#endif
 }
 
 //============
 
 uint32_t ii = 0;
 
-uint32_t timenow_1 = 0;
-uint32_t timelast_1 = 0;
+uint32_t time_encoder_1_now = 0;
+uint32_t time_encoder_1_last = 0;
 
-uint32_t timenow_2 = 0;
-uint32_t timelast_2 = 0;
+uint32_t time_encoder_2_now = 0;
+uint32_t time_encoder_2_last = 0;
 
-uint32_t time_send_now = 0;
-uint32_t time_send_last = 0;
-uint32_t time_send_interval = 100;
+uint32_t time_imu_now = 0;
+uint32_t time_imu_last = 0;
+uint32_t time_imu_interval_ms = 0;
 
-#define ENCODER_INTERVAL 100
+uint32_t time_send_binary_now = 0;
+uint32_t time_send_binary_last = 0;
+
+uint32_t time_send_ascii_now = 0;
+uint32_t time_send_ascii_last = 0;
 
 // int xx_serial_message_buffer_size = 10;
 
@@ -166,31 +259,105 @@ volatile bool interrupt_called = 0;
 float float_rate1 = 0.0;
 float float_rate2 = 0.0;
 
+const double degrees_per_radian = 57.29577; //(180.0 / 3.141592653589793238463)
+
+const double radians_per_degree = 0.01745329; //( 3.141592653589793238463 / 180.0 )
+
+bool first_run = false; // for serial raw cal
+
+///////////////////////////////////////////////////////
+//////////////// LOOP ///////////////////////////////
+
 void loop()
 {
+
+  ////////////////////////  IMU  ////////////////////////
+
+  time_imu_now = millis();
+  time_imu_interval_ms = time_imu_now - time_imu_last;
+  if (time_imu_interval_ms > IMU_INTERVAL)
+  {
+    time_imu_last = time_imu_now;
+
+    if (imu_active)
+    {
+      imu_update_accel_values();
+    }
+
+    if (mag_active)
+    {
+      imu_update_mag_values();
+    }
+
+    if (gyr_active)
+    {
+      imu_update_gyro_values();
+    }
+    time_imu_now = millis();
+
+#if (IMU_MADGWICK || IMU_MAHONY || IMU_NXP)
+    filter.update(status_cal_gyr_x, status_cal_gyr_y, status_cal_gyr_z,
+                  status_cal_acc_x, status_cal_acc_y, status_cal_acc_z,
+                  status_cal_mag_x, -status_cal_mag_y, -status_cal_mag_z, (time_imu_now - time_imu_last) / 1000.0); // (time_imu_now - time_imu_last)/1000.0
+                                                                                                                    // time_imu_last = time_imu_now;
+
+    status_imu_roll = filter.getRoll();
+    status_imu_pitch = filter.getPitch();
+    status_imu_yaw = filter.getYaw();
+#endif
+
+#if IMU_FUSION
+
+    // Acquire latest sensor data
+    // const clock_t timestamp = clock();                                                    // replace this with actual gyroscope timestamp
+    FusionVector gyroscope = {status_cal_gyr_x, status_cal_gyr_y, status_cal_gyr_z};      // replace this with actual gyroscope data in degrees/s
+    FusionVector accelerometer = {status_cal_acc_x, status_cal_acc_y, status_cal_acc_z};  // replace this with actual accelerometer data in g
+    FusionVector magnetometer = {status_cal_mag_x, -status_cal_mag_y, -status_cal_mag_z}; // replace this with actual magnetometer data in arbitrary units
+
+    // Apply calibration
+    gyroscope = FusionCalibrationInertial(gyroscope, gyroscopeMisalignment, gyroscopeSensitivity, gyroscopeOffset);
+    accelerometer = FusionCalibrationInertial(accelerometer, accelerometerMisalignment, accelerometerSensitivity, accelerometerOffset);
+    magnetometer = FusionCalibrationMagnetic(magnetometer, softIronMatrix, hardIronOffset);
+
+    // Update gyroscope offset correction algorithm
+    gyroscope = FusionOffsetUpdate(&offset, gyroscope);
+
+    // Calculate delta time (in seconds) to account for gyroscope sample clock error
+    // time_imu_interval_ms already set
+
+    // Update gyroscope AHRS algorithm
+    FusionAhrsUpdate(&ahrs, gyroscope, accelerometer, magnetometer, time_imu_interval_ms / 1000.0);
+
+    // Print algorithm outputs
+    const FusionEuler euler = FusionQuaternionToEuler(FusionAhrsGetQuaternion(&ahrs));
+    // const FusionVector earth = FusionAhrsGetEarthAcceleration(&ahrs);
+    const FusionQuaternion quaternion = FusionAhrsGetQuaternion(&ahrs);
+
+    status_imu_roll = euler.angle.roll;
+    status_imu_pitch = euler.angle.pitch;
+    status_imu_yaw = euler.angle.yaw;
+
+    status_imu_quat_w = quaternion.element.w;
+    status_imu_quat_x = quaternion.element.x;
+    status_imu_quat_y = quaternion.element.y;
+    status_imu_quat_z = quaternion.element.z;
+
+#endif
+  }
+
+  ////////////////////////  Motors  ////////////////////////
+
   // Get latest encoder counts from interrupt-populated count
   status_m1_enc_count = encoderCount1;
   status_m1_rot_dir = encoderDirection1;
   status_m2_enc_count = encoderCount2;
   status_m2_rot_dir = encoderDirection2;
 
-  //  bool astate = enc_state_2A;
-  //  bool bstate = enc_state_2B;
-
-  /*Serial.print(status_m1_enc_count);
-  Serial.print(" ");
-  Serial.print(status_m1_rot_dir);
-  Serial.print(" ");
-  Serial.print(status_m2_enc_count);
-  Serial.print(" ");
-  Serial.println(status_m2_rot_dir);*/
-
-  timenow_1 = millis();
-
-  if (timenow_1 - timelast_1 > ENCODER_INTERVAL)
+  time_encoder_1_now = millis();
+  if (time_encoder_1_now - time_encoder_1_last > ENCODER_INTERVAL)
   {
-    uint32_t interval_1 = timenow_1 - timelast_1;
-    timelast_1 = timenow_1;
+    uint32_t interval_1 = time_encoder_1_now - time_encoder_1_last;
+    time_encoder_1_last = time_encoder_1_now;
 
     int32_t traveled = status_m1_enc_count - m1_enc_count_last;
     m1_enc_count_last = status_m1_enc_count;
@@ -198,12 +365,11 @@ void loop()
     status_m1_rot_rate = 1000 * (((float)traveled) / ((float)interval_1));
   }
 
-  timenow_2 = millis();
-
-  if (timenow_2 - timelast_2 > ENCODER_INTERVAL)
+  time_encoder_2_now = millis();
+  if (time_encoder_2_now - time_encoder_2_last > ENCODER_INTERVAL)
   {
-    uint32_t interval_2 = timenow_2 - timelast_2;
-    timelast_2 = timenow_2;
+    uint32_t interval_2 = time_encoder_2_now - time_encoder_2_last;
+    time_encoder_2_last = time_encoder_2_now;
 
     int32_t traveled = status_m2_enc_count - m2_enc_count_last;
     m2_enc_count_last = status_m2_enc_count;
@@ -211,13 +377,60 @@ void loop()
     status_m2_rot_rate = 1000 * (((float)traveled) / ((float)interval_2));
   }
 
+  ////////////////////////  Serial  ////////////////////////
+
   readSerialData();
 
-  time_send_now = millis();
-
-  if (time_send_now - time_send_last > time_send_interval)
+  time_send_ascii_now = millis();
+  if (time_send_ascii_now - time_send_ascii_last > SERIAL_ASCII_INTERVAL)
   {
-    time_send_last = time_send_now;
+    time_send_ascii_last = time_send_ascii_now;
+
+    if (SERIAL_IMU_MAG_CAL)
+    {
+      sendSerial_imu_mag_cal();
+    }
+
+    if (SERIAL_IMU_RAW)
+    {
+      sendSerial_imu_raw();
+    }
+
+    if (SERIAL_IMU_CALIBRATED)
+    {
+      sendSerial_imu_calibrated();
+    }
+
+    if (SERIAL_IMU_CALIBRATED_SERIALPLOT)
+    {
+      sendSerial_imu_calibrated_serialplot();
+    }
+
+    if (SERIAL_IMU_RAW_VS_CAL)
+    {
+      sendSerial_imu_raw_vs_cal();
+    }
+
+    if (SERIAL_IMU_RPY)
+    {
+      sendSerial_imu_rpy();
+    }
+
+    if (SERIAL_IMU_RPY_SERIALPLOT)
+    {
+      sendSerial_imu_rpy_serialplot();
+    }
+
+    if (SERIAL_IMU_RPY_ADAFRUIT_WEBSERIAL)
+    {
+      sendSerial_imu_rpy_adafruit_webserial();
+    }
+  }
+
+  time_send_binary_now = millis();
+  if (time_send_binary_now - time_send_binary_last > SERIAL_BINARY_INTERVAL)
+  {
+    time_send_binary_last = time_send_binary_now;
 
     if (SERIAL_BINARY)
     {

@@ -3,6 +3,59 @@
 
 #include <parameters.h>
 
+#include <Arduino.h>
+#include <mbed.h>
+#include <SimpleKalmanFilter.h>
+#include <Adafruit_AHRS.h>
+#include <Fusion.h>
+
+
+///////////////////// IMU /////////////////////
+
+extern bool imu_active;
+extern bool mag_active;
+extern bool gyr_active;
+
+extern float acc_filt_x, acc_filt_y, acc_filt_z;
+
+extern SimpleKalmanFilter acc_kalman_filter_x;
+extern SimpleKalmanFilter acc_kalman_filter_y;
+extern SimpleKalmanFilter acc_kalman_filter_z;
+
+bool imu_initialize(void);
+void imu_update_accel_values(void);
+void imu_update_accel_values_filtered(void);
+void imu_update_mag_values(void);
+void imu_update_gyro_values(void);
+
+float imu_get_acc_update_rate();
+float imu_get_mag_update_rate();
+float imu_get_gyro_update_rate();
+
+// Using Arduino LSM9DS1 library: [-4, +4] g -/+0.122 mg
+
+// For temperature measurements, the units of the standard
+// deviation would be degrees Celsius or Fahrenheit.
+#define ACC_KALMAN_MEASUREMENT_UNCERTAINTY 0.0148f
+
+//  For example, if you're estimating the position and velocity
+// of an object in meters and meters per second, respectively,
+// the units of the covariance matrix would be meters squared
+// and meters squared per second squared.
+#define ACC_KALMAN_ESTIMATION_UNCERTAINTY 0.2f
+
+// For example, if you're estimating the position and velocity
+// of an object in meters and meters per second, respectively,
+// and the time units used in the Kalman filter equations are seconds,
+//  the units of the process noise covariance matrix would be meters
+// squared per second squared and meters squared per second to the fourth power
+#define ACC_KALMAN_PROCESS_NOISE_UNCERTAINTY 0.1f
+
+// Scale 0.5, thresh 2.0 reaches 1.0 at 3.4 G
+#define GFLASH_MAX 2.5
+#define GFLASH_START 1.8
+
+/// @brief ///////////////////////////////////
 extern mbed::PwmOut pwmPin1;
 extern mbed::PwmOut pwmPin2;
 
@@ -44,21 +97,28 @@ float motor_driver_getM2CurrentMilliamps(void);
 unsigned char motor_driver_getM1Fault(void);
 unsigned char motor_driver_getM2Fault(void);
 
-//extern void sendBool(bool value);
-//extern void sendInt(int8_t value);
-//extern void sendUnsignedInt(uint8_t value);
-//extern void sendFloat(float value);
+// extern void sendBool(bool value);
+// extern void sendInt(int8_t value);
+// extern void sendUnsignedInt(uint8_t value);
+// extern void sendFloat(float value);
 
 extern void sendSerialData(byte message_type);
-extern byte messageBuffer[128]; 
-extern byte sendBuffer[128];    
-
+extern byte messageBuffer[128];
+extern byte sendBuffer[128];
 
 extern void readSerialData();
 
+extern void sendSerial_imu_mag_cal();
+extern void sendSerial_imu_raw();
+extern void sendSerial_imu_raw_vs_cal();
+extern void sendSerial_imu_calibrated();
+extern void sendSerial_imu_rpy();
+extern void sendSerial_imu_rpy_serialplot();
+extern void sendSerial_imu_calibrated_serialplot();
+extern void sendSerial_imu_rpy_adafruit_webserial();
+
 extern int xx_serial_message_buffer_size;
 ///////////////////////////////////////////////
-
 
 // 1 byte
 extern bool status_motor1_ina;
@@ -117,20 +177,62 @@ extern float status_angle_y;
 extern float status_angle_z;
 
 // 12 bytes
-extern float status_ang_rate_x;
-extern float status_ang_rate_y;
-extern float status_ang_rate_z;
+extern float status_gyr_x;
+extern float status_gyr_y;
+extern float status_gyr_z;
 
+extern float status_mag_x;
+extern float status_mag_y;
+extern float status_mag_z;
+
+////
+
+extern float status_cal_acc_x;
+extern float status_cal_acc_y;
+extern float status_cal_acc_z;
+
+extern float status_cal_gyr_x;
+extern float status_cal_gyr_y;
+extern float status_cal_gyr_z;
+
+extern float status_cal_mag_x;
+extern float status_cal_mag_y;
+extern float status_cal_mag_z;
+
+extern bool first_run;
 ///////////////////////////////////////////////
 
-extern volatile int32_t encoderCount1; // Encoder count for motor 1
+extern float status_imu_roll;
+extern float status_imu_pitch;
+extern float status_imu_yaw;
+
+extern float status_imu_quat_w;
+extern float status_imu_quat_x;
+extern float status_imu_quat_y;
+extern float status_imu_quat_z;
+
+extern volatile int32_t encoderCount1;  // Encoder count for motor 1
 extern volatile bool encoderDirection1; // Direction flag for motor 1
 extern int32_t m1_enc_count_last;
 
-extern volatile int32_t encoderCount2; // Encoder count for motor 2
+extern volatile int32_t encoderCount2;  // Encoder count for motor 2
 extern volatile bool encoderDirection2; // Direction flag for motor 2
 extern int32_t m2_enc_count_last;
 
+////////////////////////////////////////// IMU
 
-
+#if IMU_MAHONY == 1
+extern Adafruit_Mahony filter;
 #endif
+
+#if IMU_MADGWICK == 1
+extern Adafruit_Madgwick filter;
+#endif
+
+#if IMU_NXP == 1
+extern Adafruit_NXPSensorFusion filter;
+#endif
+
+
+
+#endif //#ifndef PROGRAMSCOMMON_H

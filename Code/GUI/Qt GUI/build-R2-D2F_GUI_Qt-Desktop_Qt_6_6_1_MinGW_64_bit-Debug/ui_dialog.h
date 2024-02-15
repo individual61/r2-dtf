@@ -203,14 +203,20 @@ public:
     QHBoxLayout *horizontalLayout_37;
     QLabel *rotratey_label_2;
     QLineEdit *angley_readvalue;
+    QLabel *magy_label;
+    QLineEdit *magy_readvalue;
     QWidget *layoutWidget_33;
     QHBoxLayout *horizontalLayout_38;
     QLabel *rotratez_label_2;
     QLineEdit *anglez_readvalue;
+    QLabel *magz_label;
+    QLineEdit *magz_readvalue;
     QWidget *layoutWidget_34;
     QHBoxLayout *horizontalLayout_39;
     QLabel *rotratex_label_2;
     QLineEdit *anglex_readvalue;
+    QLabel *magx_label;
+    QLineEdit *magx_readvalue;
     QRadioButton *flag1_indicator_2;
     QRadioButton *flag3_indicator;
     QRadioButton *flag2_indicator_2;
@@ -900,7 +906,7 @@ public:
 
         layoutWidget_21 = new QWidget(Dialog);
         layoutWidget_21->setObjectName("layoutWidget_21");
-        layoutWidget_21->setGeometry(QRect(170, 320, 161, 26));
+        layoutWidget_21->setGeometry(QRect(10, 320, 161, 26));
         horizontalLayout_26 = new QHBoxLayout(layoutWidget_21);
         horizontalLayout_26->setObjectName("horizontalLayout_26");
         horizontalLayout_26->setContentsMargins(0, 0, 0, 0);
@@ -918,7 +924,7 @@ public:
 
         layoutWidget_22 = new QWidget(Dialog);
         layoutWidget_22->setObjectName("layoutWidget_22");
-        layoutWidget_22->setGeometry(QRect(170, 350, 161, 26));
+        layoutWidget_22->setGeometry(QRect(10, 350, 161, 26));
         horizontalLayout_27 = new QHBoxLayout(layoutWidget_22);
         horizontalLayout_27->setObjectName("horizontalLayout_27");
         horizontalLayout_27->setContentsMargins(0, 0, 0, 0);
@@ -936,7 +942,7 @@ public:
 
         layoutWidget_23 = new QWidget(Dialog);
         layoutWidget_23->setObjectName("layoutWidget_23");
-        layoutWidget_23->setGeometry(QRect(170, 380, 161, 26));
+        layoutWidget_23->setGeometry(QRect(10, 380, 161, 26));
         horizontalLayout_28 = new QHBoxLayout(layoutWidget_23);
         horizontalLayout_28->setObjectName("horizontalLayout_28");
         horizontalLayout_28->setContentsMargins(0, 0, 0, 0);
@@ -954,7 +960,7 @@ public:
 
         layoutWidget_24 = new QWidget(Dialog);
         layoutWidget_24->setObjectName("layoutWidget_24");
-        layoutWidget_24->setGeometry(QRect(330, 380, 161, 26));
+        layoutWidget_24->setGeometry(QRect(170, 380, 161, 26));
         horizontalLayout_29 = new QHBoxLayout(layoutWidget_24);
         horizontalLayout_29->setObjectName("horizontalLayout_29");
         horizontalLayout_29->setContentsMargins(0, 0, 0, 0);
@@ -972,7 +978,7 @@ public:
 
         layoutWidget_25 = new QWidget(Dialog);
         layoutWidget_25->setObjectName("layoutWidget_25");
-        layoutWidget_25->setGeometry(QRect(330, 350, 161, 26));
+        layoutWidget_25->setGeometry(QRect(170, 350, 161, 26));
         horizontalLayout_30 = new QHBoxLayout(layoutWidget_25);
         horizontalLayout_30->setObjectName("horizontalLayout_30");
         horizontalLayout_30->setContentsMargins(0, 0, 0, 0);
@@ -990,7 +996,7 @@ public:
 
         layoutWidget_26 = new QWidget(Dialog);
         layoutWidget_26->setObjectName("layoutWidget_26");
-        layoutWidget_26->setGeometry(QRect(330, 320, 161, 26));
+        layoutWidget_26->setGeometry(QRect(170, 320, 161, 26));
         horizontalLayout_31 = new QHBoxLayout(layoutWidget_26);
         horizontalLayout_31->setObjectName("horizontalLayout_31");
         horizontalLayout_31->setContentsMargins(0, 0, 0, 0);
@@ -1002,6 +1008,7 @@ public:
 
         rotratex_readvalue = new QLineEdit(layoutWidget_26);
         rotratex_readvalue->setObjectName("rotratex_readvalue");
+        rotratex_readvalue->setMinimumSize(QSize(90, 0));
         rotratex_readvalue->setMaximumSize(QSize(90, 16777215));
 
         horizontalLayout_31->addWidget(rotratex_readvalue);
@@ -1462,7 +1469,7 @@ public:
         unkcommand_indicator->setAutoExclusive(false);
         layoutWidget_32 = new QWidget(Dialog);
         layoutWidget_32->setObjectName("layoutWidget_32");
-        layoutWidget_32->setGeometry(QRect(490, 350, 161, 26));
+        layoutWidget_32->setGeometry(QRect(330, 350, 275, 26));
         horizontalLayout_37 = new QHBoxLayout(layoutWidget_32);
         horizontalLayout_37->setObjectName("horizontalLayout_37");
         horizontalLayout_37->setContentsMargins(0, 0, 0, 0);
@@ -1474,13 +1481,27 @@ public:
 
         angley_readvalue = new QLineEdit(layoutWidget_32);
         angley_readvalue->setObjectName("angley_readvalue");
+        angley_readvalue->setMinimumSize(QSize(90, 0));
         angley_readvalue->setMaximumSize(QSize(90, 16777215));
 
         horizontalLayout_37->addWidget(angley_readvalue);
 
+        magy_label = new QLabel(layoutWidget_32);
+        magy_label->setObjectName("magy_label");
+        magy_label->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        horizontalLayout_37->addWidget(magy_label);
+
+        magy_readvalue = new QLineEdit(layoutWidget_32);
+        magy_readvalue->setObjectName("magy_readvalue");
+        magy_readvalue->setMinimumSize(QSize(90, 0));
+        magy_readvalue->setMaximumSize(QSize(90, 16777215));
+
+        horizontalLayout_37->addWidget(magy_readvalue);
+
         layoutWidget_33 = new QWidget(Dialog);
         layoutWidget_33->setObjectName("layoutWidget_33");
-        layoutWidget_33->setGeometry(QRect(490, 380, 161, 26));
+        layoutWidget_33->setGeometry(QRect(330, 380, 275, 26));
         horizontalLayout_38 = new QHBoxLayout(layoutWidget_33);
         horizontalLayout_38->setObjectName("horizontalLayout_38");
         horizontalLayout_38->setContentsMargins(0, 0, 0, 0);
@@ -1492,13 +1513,27 @@ public:
 
         anglez_readvalue = new QLineEdit(layoutWidget_33);
         anglez_readvalue->setObjectName("anglez_readvalue");
+        anglez_readvalue->setMinimumSize(QSize(90, 0));
         anglez_readvalue->setMaximumSize(QSize(90, 16777215));
 
         horizontalLayout_38->addWidget(anglez_readvalue);
 
+        magz_label = new QLabel(layoutWidget_33);
+        magz_label->setObjectName("magz_label");
+        magz_label->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        horizontalLayout_38->addWidget(magz_label);
+
+        magz_readvalue = new QLineEdit(layoutWidget_33);
+        magz_readvalue->setObjectName("magz_readvalue");
+        magz_readvalue->setMinimumSize(QSize(90, 0));
+        magz_readvalue->setMaximumSize(QSize(90, 16777215));
+
+        horizontalLayout_38->addWidget(magz_readvalue);
+
         layoutWidget_34 = new QWidget(Dialog);
         layoutWidget_34->setObjectName("layoutWidget_34");
-        layoutWidget_34->setGeometry(QRect(490, 320, 161, 26));
+        layoutWidget_34->setGeometry(QRect(330, 320, 275, 26));
         horizontalLayout_39 = new QHBoxLayout(layoutWidget_34);
         horizontalLayout_39->setObjectName("horizontalLayout_39");
         horizontalLayout_39->setContentsMargins(0, 0, 0, 0);
@@ -1510,9 +1545,23 @@ public:
 
         anglex_readvalue = new QLineEdit(layoutWidget_34);
         anglex_readvalue->setObjectName("anglex_readvalue");
+        anglex_readvalue->setMinimumSize(QSize(90, 0));
         anglex_readvalue->setMaximumSize(QSize(90, 16777215));
 
         horizontalLayout_39->addWidget(anglex_readvalue);
+
+        magx_label = new QLabel(layoutWidget_34);
+        magx_label->setObjectName("magx_label");
+        magx_label->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        horizontalLayout_39->addWidget(magx_label);
+
+        magx_readvalue = new QLineEdit(layoutWidget_34);
+        magx_readvalue->setObjectName("magx_readvalue");
+        magx_readvalue->setMinimumSize(QSize(90, 0));
+        magx_readvalue->setMaximumSize(QSize(90, 16777215));
+
+        horizontalLayout_39->addWidget(magx_readvalue);
 
         flag1_indicator_2 = new QRadioButton(Dialog);
         flag1_indicator_2->setObjectName("flag1_indicator_2");
@@ -1744,15 +1793,15 @@ public:
         d3_indicator->setAutoExclusive(false);
         receiveserial_while_count_indicator = new QLineEdit(Dialog);
         receiveserial_while_count_indicator->setObjectName("receiveserial_while_count_indicator");
-        receiveserial_while_count_indicator->setGeometry(QRect(40, 330, 90, 24));
+        receiveserial_while_count_indicator->setGeometry(QRect(540, 10, 90, 24));
         receiveserial_while_count_indicator->setMaximumSize(QSize(90, 16777215));
         int32_entry = new QLineEdit(Dialog);
         int32_entry->setObjectName("int32_entry");
-        int32_entry->setGeometry(QRect(40, 360, 90, 24));
+        int32_entry->setGeometry(QRect(540, 40, 90, 24));
         int32_entry->setMaximumSize(QSize(90, 16777215));
         float_entry = new QLineEdit(Dialog);
         float_entry->setObjectName("float_entry");
-        float_entry->setGeometry(QRect(40, 390, 90, 24));
+        float_entry->setGeometry(QRect(540, 70, 90, 24));
         float_entry->setMaximumSize(QSize(90, 16777215));
         widget = new QWidget(Dialog);
         widget->setObjectName("widget");
@@ -1929,10 +1978,16 @@ public:
         unkcommand_indicator->setText(QCoreApplication::translate("Dialog", "Unk Command", nullptr));
         rotratey_label_2->setText(QCoreApplication::translate("Dialog", "Angle Y", nullptr));
         angley_readvalue->setText(QString());
+        magy_label->setText(QCoreApplication::translate("Dialog", "Mag Y", nullptr));
+        magy_readvalue->setText(QString());
         rotratez_label_2->setText(QCoreApplication::translate("Dialog", "Angle Z", nullptr));
         anglez_readvalue->setText(QString());
+        magz_label->setText(QCoreApplication::translate("Dialog", "Mag Z", nullptr));
+        magz_readvalue->setText(QString());
         rotratex_label_2->setText(QCoreApplication::translate("Dialog", "Angle X", nullptr));
         anglex_readvalue->setText(QString());
+        magx_label->setText(QCoreApplication::translate("Dialog", "Mag X", nullptr));
+        magx_readvalue->setText(QString());
         flag1_indicator_2->setText(QCoreApplication::translate("Dialog", "Flag 1", nullptr));
         flag3_indicator->setText(QCoreApplication::translate("Dialog", "Flag 3", nullptr));
         flag2_indicator_2->setText(QCoreApplication::translate("Dialog", "Flag 2", nullptr));

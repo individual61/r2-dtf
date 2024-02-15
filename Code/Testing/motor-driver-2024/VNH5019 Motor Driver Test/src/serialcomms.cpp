@@ -207,19 +207,18 @@ void sendSerialData(byte message_type)
 {
     uint send_buffer_size = 0;
     // Create a buffer to hold the data
-    if(message_type == 0)
+    if (message_type == 0)
     {
         send_buffer_size = SERIAL_SEND_BUFFER_SIZE_0;
     }
-        if(message_type == 1)
+    if (message_type == 1)
     {
         send_buffer_size = SERIAL_SEND_BUFFER_SIZE_1;
     }
-        if(message_type == 2)
+    if (message_type == 2)
     {
         send_buffer_size = SERIAL_SEND_BUFFER_SIZE_2;
     }
-    
 
     // Index to keep track of the current position in the buffer
     int index = 0;
@@ -229,7 +228,7 @@ void sendSerialData(byte message_type)
         index = 0;
 
         // 1 byte
-        messageBuffer[index] = (byte) message_type;
+        messageBuffer[index] = (byte)message_type;
         index++;
         // Total = 1
 
@@ -271,7 +270,7 @@ void sendSerialData(byte message_type)
         // Store the packed boolean value in the buffer
         messageBuffer[index++] = boolsPacked;
         // Total = 4
-        
+
         memcpy(messageBuffer + index, &status_motor1_pwm, sizeof(uint16_t));
         index += sizeof(uint16_t);
         // Total = 6
@@ -303,12 +302,11 @@ void sendSerialData(byte message_type)
         memcpy(messageBuffer + index, &status_m2_rot_rate, sizeof(int32_t));
         index += sizeof(int32_t);
         // Total = 28
-
     }
     else if (message_type == 1)
     {
         index = 0;
-        messageBuffer[index] = (byte) message_type;
+        messageBuffer[index] = (byte)message_type;
         index++;
         // Total = 1
 
@@ -324,7 +322,6 @@ void sendSerialData(byte message_type)
         index += sizeof(float);
         // Total = 13
 
-
         memcpy(messageBuffer + index, &status_angle_x, sizeof(float));
         index += sizeof(float);
         // Total = 17
@@ -336,29 +333,38 @@ void sendSerialData(byte message_type)
         memcpy(messageBuffer + index, &status_angle_z, sizeof(float));
         index += sizeof(float);
         // Total = 25
-
     }
     else if (message_type == 2)
     {
         index = 0;
-        messageBuffer[index] = (byte) message_type;
+        messageBuffer[index] = (byte)message_type;
         index++;
         // Total = 1
 
-        memcpy(messageBuffer + index, &status_ang_rate_x, sizeof(float));
+        memcpy(messageBuffer + index, &status_gyr_x, sizeof(float));
         index += sizeof(float);
         // Total = 5
 
-        memcpy(messageBuffer + index, &status_ang_rate_y, sizeof(float));
+        memcpy(messageBuffer + index, &status_gyr_y, sizeof(float));
         index += sizeof(float);
         // Total = 9
 
-        memcpy(messageBuffer + index, &status_ang_rate_z, sizeof(float));
+        memcpy(messageBuffer + index, &status_gyr_z, sizeof(float));
         index += sizeof(float);
         // Total = 13
 
-    }
+        memcpy(messageBuffer + index, &status_mag_x, sizeof(float));
+        index += sizeof(float);
+        // Total = 17
 
+        memcpy(messageBuffer + index, &status_mag_y, sizeof(float));
+        index += sizeof(float);
+        // Total = 21
+
+        memcpy(messageBuffer + index, &status_mag_z, sizeof(float));
+        index += sizeof(float);
+        // Total = 25*/
+    }
 
     sendBuffer[0] = (byte)SERIAL_HEADER;
     sendBuffer[1] = (byte)SERIAL_HEADER;
@@ -369,9 +375,236 @@ void sendSerialData(byte message_type)
         sendBuffer[3 + i * 2] = (byte)SERIAL_PAD;
     }
 
-
     // Send the entire buffer with a single call to Serial.write()
     Serial.write(sendBuffer, send_buffer_size);
-
-
 }
+
+#if SERIAL_IMU_MAG_CAL == 1
+
+void sendSerial_imu_mag_cal()
+{
+    // For use with PJRC Motioncal
+
+    // From Arduino BMI270 BMM150 library
+    //
+    // default range is +-4G, so conversion factor is (((1 << 15)/4.0f))
+    // #define INT16_to_G   (8192.0f)
+    // Used as
+    //   #ifdef TARGET_ARDUINO_NANO33BLE
+    //   x = -sensor_data.acc.y / INT16_to_G;
+
+    // default range is +-2000dps, so conversion factor is (((1 << 15)/4.0f))
+    // #define INT16_to_DPS   (16.384f)
+    // Used as
+    //   #ifdef TARGET_ARDUINO_NANO33BLE
+    //   x = -sensor_data.gyr.y / INT16_to_DPS;
+
+    /*
+    Accelerometer range is set at [-4, +4]g -/+0.122 mg.
+    Gyroscope range is set at [-2000, +2000] dps +/-70 mdps.
+    Magnetometer range is set at [-400, +400] uT +/-0.014 uT.
+    */
+    // From
+    Serial.print("Raw:");
+    Serial.print(int(status_acc_x * 8192.0)); // Adafruit:  Serial.print(int(status_acc_x * 8192 / 9.8));
+    Serial.print(",");
+    Serial.print(int(status_acc_y * 8192.0));
+    Serial.print(",");
+    Serial.print(int(status_acc_z * 8192.0));
+    Serial.print(",");
+    Serial.print(int(status_gyr_x * 16.384)); //  Adafruit:  Serial.print(int(status_gyr_x * DEGREES_PER_RADIAN * 16));
+    Serial.print(",");
+    Serial.print(int(status_gyr_y * 16.384));
+    Serial.print(",");
+    Serial.print(int(status_gyr_z * 16.384));
+    Serial.print(",");
+    Serial.print(int(status_mag_x * 10));
+    Serial.print(",");
+    Serial.print(int(status_mag_y * 10));
+    Serial.print(",");
+    Serial.print(int(status_mag_z * 10));
+    Serial.println("");
+}
+#endif
+
+#if SERIAL_IMU_RAW == 1
+
+void sendSerial_imu_raw()
+{
+    if (first_run == true)
+    {
+        first_run = false;
+        Serial.println("ax,ay,az,mx,my,mz,gx,gy,gz");
+    }
+
+    Serial.print(status_acc_x);
+    Serial.print(",");
+    Serial.print(status_acc_y);
+    Serial.print(",");
+    Serial.print(status_acc_z);
+    Serial.print(",");
+    Serial.print(status_mag_x);
+    Serial.print(",");
+    Serial.print(status_mag_y);
+    Serial.print(",");
+    Serial.print(status_mag_z);
+    Serial.print(",");
+    Serial.print(status_gyr_x);
+    Serial.print(",");
+    Serial.print(status_gyr_y);
+    Serial.print(",");
+    Serial.println(status_gyr_z);
+}
+
+#endif
+
+#if SERIAL_IMU_CALIBRATED == 1
+
+void sendSerial_imu_calibrated()
+{
+    Serial.print("a: ");
+    Serial.print(status_cal_acc_x);
+    Serial.print(" ");
+    Serial.print(status_cal_acc_y);
+    Serial.print(" ");
+    Serial.print(status_cal_acc_z);
+    Serial.print("\tm: ");
+    Serial.print(status_cal_mag_x);
+    Serial.print(" ");
+    Serial.print(status_cal_mag_y);
+    Serial.print(" ");
+    Serial.print(status_cal_mag_z);
+    Serial.print("\tr: ");
+    Serial.print(status_cal_gyr_x);
+    Serial.print(" ");
+    Serial.print(status_cal_gyr_y);
+    Serial.print(" ");
+    Serial.println(status_cal_gyr_z);
+}
+#endif
+
+#if SERIAL_IMU_RAW_VS_CAL == 1
+
+void sendSerial_imu_raw_vs_cal()
+{
+    Serial.print(status_acc_x);
+    Serial.print(",");
+    Serial.print(status_cal_acc_x);
+    Serial.print(",");
+
+    Serial.print(status_acc_y);
+    Serial.print(",");
+    Serial.print(status_cal_acc_y);
+    Serial.print(",");
+
+    Serial.print(status_acc_z);
+    Serial.print(",");
+    Serial.print(status_cal_acc_z);
+    Serial.print(",");
+
+    Serial.print(status_mag_x);
+    Serial.print(",");
+    Serial.print(status_cal_mag_x);
+    Serial.print(",");
+
+    Serial.print(status_mag_y);
+    Serial.print(",");
+    Serial.print(status_cal_mag_y);
+    Serial.print(",");
+
+    Serial.print(status_mag_z);
+    Serial.print(",");
+    Serial.print(status_cal_mag_z);
+    Serial.print(",");
+
+    Serial.print(status_gyr_x);
+    Serial.print(",");
+    Serial.print(status_cal_gyr_x);
+    Serial.print(",");
+
+    Serial.print(status_gyr_y);
+    Serial.print(",");
+    Serial.print(status_cal_gyr_y);
+    Serial.print(",");
+
+    Serial.print(status_gyr_z);
+    Serial.print(",");
+    Serial.println(status_cal_gyr_z);
+}
+#endif
+
+#if SERIAL_IMU_RPY == 1
+
+void sendSerial_imu_rpy()
+{
+    float roll = filter.getRoll();
+    float pitch = filter.getPitch();
+    float yaw = filter.getYaw();
+    Serial.print("Roll:");
+    Serial.print(roll);
+    Serial.print(",Pitch:");
+    Serial.print(pitch);
+    Serial.print(",Yaw:");
+    Serial.println(yaw);
+}
+#endif
+
+#if SERIAL_IMU_CALIBRATED_SERIALPLOT == 1
+
+void sendSerial_imu_calibrated_serialplot()
+{
+    // Serial.print("a: ");
+    Serial.print(status_cal_acc_x);
+    Serial.print(",");
+    Serial.print(status_cal_acc_y);
+    Serial.print(",");
+    Serial.print(status_cal_acc_z);
+    Serial.print(",");
+    Serial.print(status_cal_mag_x);
+    Serial.print(",");
+    Serial.print(status_cal_mag_y);
+    Serial.print(",");
+    Serial.print(status_cal_mag_z);
+    Serial.print(",");
+    Serial.print(status_cal_gyr_x);
+    Serial.print(",");
+    Serial.print(status_cal_gyr_y);
+    Serial.print(",");
+    Serial.println(status_cal_gyr_z);
+}
+#endif
+
+#if SERIAL_IMU_RPY_SERIALPLOT == 1
+
+void sendSerial_imu_rpy_serialplot()
+{
+
+    Serial.print(status_imu_roll);
+    Serial.print(",");
+    Serial.print(status_imu_pitch);
+    Serial.print(",");
+    Serial.println(status_imu_yaw);
+}
+#endif
+
+#if SERIAL_IMU_RPY_ADAFRUIT_WEBSERIAL == 1
+
+void sendSerial_imu_rpy_adafruit_webserial()
+{
+    Serial.print("Orientation: ");
+    Serial.print(status_imu_yaw);
+    Serial.print(", ");
+    Serial.print(status_imu_pitch);
+    Serial.print(", ");
+    Serial.println(status_imu_roll);
+
+    Serial.print("Quaternion: ");
+    Serial.print(status_imu_quat_w, 4);
+    Serial.print(", ");
+    Serial.print(status_imu_quat_x, 4);
+    Serial.print(", ");
+    Serial.print(status_imu_quat_y, 4);
+    Serial.print(", ");
+    Serial.println(status_imu_quat_z, 4);
+}
+#endif

@@ -143,7 +143,7 @@ void Dialog::readSerial() {
     const byte SERIAL_HEADER = 0x3E; // decimal 62 '>'
     const byte SERIAL_PAD = 0x5F;    // decimal 95 '_'
 
-    const byte SERIAL_MESSAGE_BUFFER_SIZE[3] = {28, 25, 13};
+    const byte SERIAL_MESSAGE_BUFFER_SIZE[3] = {28, 25, 25};
     byte SERIAL_SEND_BUFFER_SIZE[3] = {0, 0, 0};
 
     for (int i = 0; i <= 2; i++)
@@ -691,15 +691,15 @@ void Dialog::processMessage(QByteArray message)
 
         // Angle X
         statusText = QString::number(status_angle_x);
-        ui->rotratex_readvalue->setText(statusText.toUtf8().constData());
+        ui->anglex_readvalue->setText(statusText.toUtf8().constData());
 
         // Angle Y
         statusText = QString::number(status_angle_y);
-        ui->rotratey_readvalue->setText(statusText.toUtf8().constData());
+        ui->angley_readvalue->setText(statusText.toUtf8().constData());
 
         // Angle Z
         statusText = QString::number(status_angle_z);
-        ui->rotratez_readvalue->setText(statusText.toUtf8().constData());
+        ui->anglez_readvalue->setText(statusText.toUtf8().constData());
 
 
     }
@@ -743,26 +743,80 @@ void Dialog::processMessage(QByteArray message)
         float status_ang_rate_z;
         memcpy(&status_ang_rate_z, floatBytes, sizeof(float));
 
-        /*
+
+
+        // status_mag_x
+        floatBytes[0] = message[index];
+        index += 2;
+        floatBytes[1] = message[index];
+        index += 2; // Skip the padding byte
+        floatBytes[2] = message[index];
+        index += 2;
+        floatBytes[3] = message[index];
+        index += 2; // Skip the padding byte
+        float status_mag_x;
+        memcpy(&status_mag_x, floatBytes, sizeof(float));
+
+        // status_mag_y
+        floatBytes[0] = message[index];
+        index += 2;
+        floatBytes[1] = message[index];
+        index += 2; // Skip the padding byte
+        floatBytes[2] = message[index];
+        index += 2;
+        floatBytes[3] = message[index];
+        index += 2; // Skip the padding byte
+        float status_mag_y;
+        memcpy(&status_mag_y, floatBytes, sizeof(float));
+
+        // status_ang_rate_z
+        floatBytes[0] = message[index];
+        index += 2;
+        floatBytes[1] = message[index];
+        index += 2; // Skip the padding byte
+        floatBytes[2] = message[index];
+        index += 2;
+        floatBytes[3] = message[index];
+        index += 2; // Skip the padding byte
+        float status_mag_z;
+        memcpy(&status_mag_z, floatBytes, sizeof(float));
+
+
         qDebug() << "Message 2 -----------------------------";
         qDebug() << "status_ang_rate_x:\t\t" << status_ang_rate_x;
         qDebug() << "status_ang_rate_y:\t\t" << status_ang_rate_y;
         qDebug() << "status_ang_rate_z:\t\t" << status_ang_rate_z;
+        qDebug() << "status_mag_x:\t\t" << status_mag_x;
+        qDebug() << "status_mag_y:\t\t" << status_mag_y;
+        qDebug() << "status_mag_z:\t\t" << status_mag_z;
         qDebug() << "-----------------------------";
         qDebug() << "\t";
-*/
 
-        // Ang Rate X
+
+        // Ang  X
         statusText = QString::number(status_ang_rate_x);
-        ui->anglex_readvalue->setText(statusText.toUtf8().constData());
+        ui->rotratex_readvalue->setText(statusText.toUtf8().constData());
 
-        // Ang Rate Y
+        // Ang  Y
         statusText = QString::number(status_ang_rate_y);
-        ui->angley_readvalue->setText(statusText.toUtf8().constData());
+        ui->rotratey_readvalue->setText(statusText.toUtf8().constData());
 
-        // Ang Rate Z
+        // Ang  Z
         statusText = QString::number(status_ang_rate_z);
-        ui->anglez_readvalue->setText(statusText.toUtf8().constData());
+        ui->rotratez_readvalue->setText(statusText.toUtf8().constData());
+
+
+        // Mag X
+        statusText = QString::number(status_mag_x);
+        ui->magx_readvalue->setText(statusText.toUtf8().constData());
+
+        // Mag Y
+        statusText = QString::number(status_mag_y);
+        ui->magy_readvalue->setText(statusText.toUtf8().constData());
+
+        // Mag Z
+        statusText = QString::number(status_mag_z);
+        ui->magz_readvalue->setText(statusText.toUtf8().constData());
 
     }
     else
