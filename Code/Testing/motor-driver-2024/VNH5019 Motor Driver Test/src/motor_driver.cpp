@@ -3,6 +3,29 @@
 
 /* Modified from https://github.com/pololu/dual-vnh5019-motor-shield to work with Arduino Nano 33 BLE fast PWM */
 
+void motor_update_enc1_rot_rate()
+{
+      uint32_t interval_1 = time_encoder_1_now - time_encoder_1_last;
+      time_encoder_1_last = time_encoder_1_now;
+
+      int32_t traveled = status_m1_enc_count - m1_enc_count_last;
+      m1_enc_count_last = status_m1_enc_count;
+
+      status_m1_rot_rate = 1000 * (((float)traveled) / ((float)interval_1));
+}
+
+void motor_update_enc2_rot_rate()
+{
+      uint32_t interval_2 = time_encoder_2_now - time_encoder_2_last;
+      time_encoder_2_last = time_encoder_2_now;
+
+      int32_t traveled = status_m2_enc_count - m2_enc_count_last;
+      m2_enc_count_last = status_m2_enc_count;
+
+      status_m2_rot_rate = 1000 * (((float)traveled) / ((float)interval_2));
+}
+
+
 void updateEncoder1()
 {
     //interrupt_called = !interrupt_called;
@@ -27,7 +50,7 @@ void updateEncoder1()
             else
             {
                 // B is high, therefore, B leads A
-                encoderDirection1 = false;
+                status_m1_rot_dir = false;
             }
         }
         else
@@ -36,12 +59,12 @@ void updateEncoder1()
             if (enc_state_1B == true)
             {
                 // B is high, therefore A leads B
-                encoderDirection1 = true;
+                status_m1_rot_dir = true;
             }
             else
             {
                 // B is low, therefore, B leads A
-                encoderDirection1 = false;
+                status_m1_rot_dir = false;
             }
         }
     }
@@ -58,12 +81,12 @@ void updateEncoder1()
             if (enc_state_1A == true)
             {
                 // A is high, therefore A leads B
-                encoderDirection1 = true;
+                status_m1_rot_dir = true;
             }
             else
             {
                 // A is low, therefore, B leads A
-                encoderDirection1 = false;
+                status_m1_rot_dir = false;
             }
         }
         else
@@ -72,33 +95,33 @@ void updateEncoder1()
             if (enc_state_1A == false)
             {
                 // A is low, therefore A leads B
-                encoderDirection1 = true;
+                status_m1_rot_dir = true;
             }
             else
             {
                 // A is high, therefore, B leads A
-                encoderDirection1 = false;
+                status_m1_rot_dir = false;
             }
         }
     }
 
         // Update encoder count based on direction
-    if (encoderDirection1)
+    if (status_m1_rot_dir)
     {
-        encoderCount1++;
+        status_m1_enc_count++;
     }
     else
     {
-        encoderCount1--;
+        status_m1_enc_count--;
     }
 
-    if (encoderCount1 == INT32_MAX)
+    if (status_m1_enc_count == INT32_MAX)
     {
-        encoderCount1 = 0;
+        status_m1_enc_count = 0;
     }
-    else if (encoderCount1 == INT32_MIN)
+    else if (status_m1_enc_count == INT32_MIN)
     {
-        encoderCount1 = INT32_MAX;
+        status_m1_enc_count = INT32_MAX;
     }
 
 }
@@ -123,12 +146,12 @@ void updateEncoder2()
             if (enc_state_2B == false)
             {
                 // B is low, therefore A leads B
-                encoderDirection2 = true;
+                status_m2_rot_dir = true;
             }
             else
             {
                 // B is high, therefore, B leads A
-                encoderDirection2 = false;
+                status_m2_rot_dir = false;
             }
         }
         else
@@ -137,12 +160,12 @@ void updateEncoder2()
             if (enc_state_2B == true)
             {
                 // B is high, therefore A leads B
-                encoderDirection2 = true;
+                status_m2_rot_dir = true;
             }
             else
             {
                 // B is low, therefore, B leads A
-                encoderDirection2 = false;
+                status_m2_rot_dir = false;
             }
         }
     }
@@ -159,12 +182,12 @@ void updateEncoder2()
             if (enc_state_2A == true)
             {
                 // A is high, therefore A leads B
-                encoderDirection2 = true;
+                status_m2_rot_dir = true;
             }
             else
             {
                 // A is low, therefore, B leads A
-                encoderDirection2 = false;
+                status_m2_rot_dir = false;
             }
         }
         else
@@ -173,33 +196,33 @@ void updateEncoder2()
             if (enc_state_2A == false)
             {
                 // A is low, therefore A leads B
-                encoderDirection2 = true;
+                status_m2_rot_dir = true;
             }
             else
             {
                 // A is high, therefore, B leads A
-                encoderDirection2 = false;
+                status_m2_rot_dir = false;
             }
         }
     }
 
     // Update encoder count based on direction
-    if (encoderDirection2)
+    if (status_m2_rot_dir)
     {
-        encoderCount2++;
+        status_m2_enc_count++;
     }
     else
     {
-        encoderCount2--;
+        status_m2_enc_count--;
     }
 
-    if (encoderCount2 == INT32_MAX)
+    if (status_m2_enc_count == INT32_MAX)
     {
-        encoderCount2 = 0;
+        status_m2_enc_count = 0;
     }
-    else if (encoderCount2 == INT32_MIN)
+    else if (status_m2_enc_count == INT32_MIN)
     {
-        encoderCount2 = INT32_MAX;
+        status_m2_enc_count = INT32_MAX;
     }
 }
 

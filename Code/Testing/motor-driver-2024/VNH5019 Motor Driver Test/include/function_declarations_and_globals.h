@@ -10,17 +10,15 @@
 #include <Fusion.h>
 
 
-///////////////////// IMU /////////////////////
+///////////////////////////////////////////////////////
+//////////////// IMU: /////////////////////////////////
 
-extern bool imu_active;
-extern bool mag_active;
-extern bool gyr_active;
 
 extern float acc_filt_x, acc_filt_y, acc_filt_z;
 
-extern SimpleKalmanFilter acc_kalman_filter_x;
-extern SimpleKalmanFilter acc_kalman_filter_y;
-extern SimpleKalmanFilter acc_kalman_filter_z;
+//extern SimpleKalmanFilter acc_kalman_filter_x;
+//extern SimpleKalmanFilter acc_kalman_filter_y;
+//extern SimpleKalmanFilter acc_kalman_filter_z;
 
 bool imu_initialize(void);
 void imu_update_accel_values(void);
@@ -31,6 +29,38 @@ void imu_update_gyro_values(void);
 float imu_get_acc_update_rate();
 float imu_get_mag_update_rate();
 float imu_get_gyro_update_rate();
+
+///////////////////////////////////////////////
+
+extern float status_imu_roll;
+extern float status_imu_pitch;
+extern float status_imu_yaw;
+
+extern float status_imu_quat_w;
+extern float status_imu_quat_x;
+extern float status_imu_quat_y;
+extern float status_imu_quat_z;
+
+
+#if IMU_MAHONY == 1
+extern Adafruit_Mahony filter;
+#endif
+
+#if IMU_MADGWICK == 1
+extern Adafruit_Madgwick filter;
+#endif
+
+#if IMU_NXP == 1
+extern Adafruit_NXPSensorFusion filter;
+#endif
+
+#if IMU_FUSION == 1
+extern FusionOffset offset;
+extern FusionAhrs ahrs;
+#endif
+
+///////////////////////////////////////////////////////
+//////////////// SIMPLE: KALMAN: ////////////////////
 
 // Using Arduino LSM9DS1 library: [-4, +4] g -/+0.122 mg
 
@@ -51,11 +81,11 @@ float imu_get_gyro_update_rate();
 // squared per second squared and meters squared per second to the fourth power
 #define ACC_KALMAN_PROCESS_NOISE_UNCERTAINTY 0.1f
 
-// Scale 0.5, thresh 2.0 reaches 1.0 at 3.4 G
-#define GFLASH_MAX 2.5
-#define GFLASH_START 1.8
 
-/// @brief ///////////////////////////////////
+
+///////////////////////////////////////////////////////
+//////////////// MOTORS: ////////////////////
+
 extern mbed::PwmOut pwmPin1;
 extern mbed::PwmOut pwmPin2;
 
@@ -79,6 +109,9 @@ void motor_driver_setBrakes(int m1Brake, int m2Brake);
 void updateEncoder1();
 void updateEncoder2();
 
+void motor_update_enc1_rot_rate();
+void motor_update_enc2_rot_rate();
+
 extern volatile bool enc_state_1A;
 extern volatile bool enc_state_1B;
 extern volatile bool enc_state_2A;
@@ -89,6 +122,16 @@ extern volatile bool enc_state_1B_prev;
 extern volatile bool enc_state_2A_prev;
 extern volatile bool enc_state_2B_prev;
 
+
+extern volatile int32_t encoderCount1;  // Encoder count for motor 1
+extern volatile bool encoderDirection1; // Direction flag for motor 1
+extern int32_t m1_enc_count_last;
+
+extern volatile int32_t encoderCount2;  // Encoder count for motor 2
+extern volatile bool encoderDirection2; // Direction flag for motor 2
+extern int32_t m2_enc_count_last;
+
+
 extern volatile bool interrupt_called;
 
 float motor_driver_getM1CurrentMilliamps(void);
@@ -97,28 +140,26 @@ float motor_driver_getM2CurrentMilliamps(void);
 unsigned char motor_driver_getM1Fault(void);
 unsigned char motor_driver_getM2Fault(void);
 
-// extern void sendBool(bool value);
-// extern void sendInt(int8_t value);
-// extern void sendUnsignedInt(uint8_t value);
-// extern void sendFloat(float value);
+
+
+///////////////////////////////////////////////////////
+//////////////// SERIAL: READ: ////////////////////////
+
+extern void readSerialData();
+
+///////////////////////////////////////////////////////
+//////////////// SERIAL: ASCII: ///////////////////////
+extern void sendSerial_ascii();
+
+
+///////////////////////////////////////////////////////
+//////////////// SERIAL: BINARY: //////////////////////
 
 extern void sendSerialData(byte message_type);
 extern byte messageBuffer[128];
 extern byte sendBuffer[128];
 
-extern void readSerialData();
-
-extern void sendSerial_imu_mag_cal();
-extern void sendSerial_imu_raw();
-extern void sendSerial_imu_raw_vs_cal();
-extern void sendSerial_imu_calibrated();
-extern void sendSerial_imu_rpy();
-extern void sendSerial_imu_rpy_serialplot();
-extern void sendSerial_imu_calibrated_serialplot();
-extern void sendSerial_imu_rpy_adafruit_webserial();
-
-extern int xx_serial_message_buffer_size;
-///////////////////////////////////////////////
+///////////-----------////////////
 
 // 1 byte
 extern bool status_motor1_ina;
@@ -200,39 +241,30 @@ extern float status_cal_mag_y;
 extern float status_cal_mag_z;
 
 extern bool first_run;
-///////////////////////////////////////////////
 
-extern float status_imu_roll;
-extern float status_imu_pitch;
-extern float status_imu_yaw;
+///////////////////////////////////////////////////////
+//////////////// TIMING: //////////////////////////////
 
-extern float status_imu_quat_w;
-extern float status_imu_quat_x;
-extern float status_imu_quat_y;
-extern float status_imu_quat_z;
+extern uint32_t time_encoder_1_now;
+extern uint32_t time_encoder_1_last;
 
-extern volatile int32_t encoderCount1;  // Encoder count for motor 1
-extern volatile bool encoderDirection1; // Direction flag for motor 1
-extern int32_t m1_enc_count_last;
+extern uint32_t time_encoder_2_now;
+extern uint32_t time_encoder_2_last;
 
-extern volatile int32_t encoderCount2;  // Encoder count for motor 2
-extern volatile bool encoderDirection2; // Direction flag for motor 2
-extern int32_t m2_enc_count_last;
+extern uint32_t time_imu_now;
+extern uint32_t time_imu_last;
+extern uint32_t time_imu_interval_ms;
 
-////////////////////////////////////////// IMU
+extern uint32_t time_send_binary_now;
+extern uint32_t time_send_binary_last;
 
-#if IMU_MAHONY == 1
-extern Adafruit_Mahony filter;
-#endif
+extern uint32_t time_send_ascii_now;
+extern uint32_t time_send_ascii_last;
 
-#if IMU_MADGWICK == 1
-extern Adafruit_Madgwick filter;
-#endif
+///////////////////////////////////////////////////////
+//////////////// LEDS: //////////////////////////////
 
-#if IMU_NXP == 1
-extern Adafruit_NXPSensorFusion filter;
-#endif
-
+extern void initialize_leds();
 
 
 #endif //#ifndef PROGRAMSCOMMON_H

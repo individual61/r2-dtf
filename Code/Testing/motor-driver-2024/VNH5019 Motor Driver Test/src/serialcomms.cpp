@@ -379,11 +379,12 @@ void sendSerialData(byte message_type)
     Serial.write(sendBuffer, send_buffer_size);
 }
 
+void sendSerial_ascii()
+{
+
 #if SERIAL_IMU_MAG_CAL == 1
 
-void sendSerial_imu_mag_cal()
-{
-    // For use with PJRC Motioncal
+    // For use with PJRC Motioncal.exe
 
     // From Arduino BMI270 BMM150 library
     //
@@ -424,13 +425,9 @@ void sendSerial_imu_mag_cal()
     Serial.print(",");
     Serial.print(int(status_mag_z * 10));
     Serial.println("");
-}
 #endif
 
 #if SERIAL_IMU_RAW == 1
-
-void sendSerial_imu_raw()
-{
     if (first_run == true)
     {
         first_run = false;
@@ -454,14 +451,9 @@ void sendSerial_imu_raw()
     Serial.print(status_gyr_y);
     Serial.print(",");
     Serial.println(status_gyr_z);
-}
-
 #endif
 
 #if SERIAL_IMU_CALIBRATED == 1
-
-void sendSerial_imu_calibrated()
-{
     Serial.print("a: ");
     Serial.print(status_cal_acc_x);
     Serial.print(" ");
@@ -480,13 +472,9 @@ void sendSerial_imu_calibrated()
     Serial.print(status_cal_gyr_y);
     Serial.print(" ");
     Serial.println(status_cal_gyr_z);
-}
 #endif
 
 #if SERIAL_IMU_RAW_VS_CAL == 1
-
-void sendSerial_imu_raw_vs_cal()
-{
     Serial.print(status_acc_x);
     Serial.print(",");
     Serial.print(status_cal_acc_x);
@@ -530,13 +518,9 @@ void sendSerial_imu_raw_vs_cal()
     Serial.print(status_gyr_z);
     Serial.print(",");
     Serial.println(status_cal_gyr_z);
-}
 #endif
 
 #if SERIAL_IMU_RPY == 1
-
-void sendSerial_imu_rpy()
-{
     float roll = filter.getRoll();
     float pitch = filter.getPitch();
     float yaw = filter.getYaw();
@@ -546,13 +530,9 @@ void sendSerial_imu_rpy()
     Serial.print(pitch);
     Serial.print(",Yaw:");
     Serial.println(yaw);
-}
 #endif
 
 #if SERIAL_IMU_CALIBRATED_SERIALPLOT == 1
-
-void sendSerial_imu_calibrated_serialplot()
-{
     // Serial.print("a: ");
     Serial.print(status_cal_acc_x);
     Serial.print(",");
@@ -571,26 +551,19 @@ void sendSerial_imu_calibrated_serialplot()
     Serial.print(status_cal_gyr_y);
     Serial.print(",");
     Serial.println(status_cal_gyr_z);
-}
+
 #endif
 
 #if SERIAL_IMU_RPY_SERIALPLOT == 1
-
-void sendSerial_imu_rpy_serialplot()
-{
-
     Serial.print(status_imu_roll);
     Serial.print(",");
     Serial.print(status_imu_pitch);
     Serial.print(",");
     Serial.println(status_imu_yaw);
-}
 #endif
 
 #if SERIAL_IMU_RPY_ADAFRUIT_WEBSERIAL == 1
-
-void sendSerial_imu_rpy_adafruit_webserial()
-{
+    // https://adafruit.github.io/Adafruit_WebSerial_3DModelViewer/
     Serial.print("Orientation: ");
     Serial.print(status_imu_yaw);
     Serial.print(", ");
@@ -606,5 +579,62 @@ void sendSerial_imu_rpy_adafruit_webserial()
     Serial.print(status_imu_quat_y, 4);
     Serial.print(", ");
     Serial.println(status_imu_quat_z, 4);
-}
 #endif
+
+#if SERIAL_IMU_RPY_PROCESSING == 1
+
+    Serial.print("Orientation: ");
+    Serial.print(status_imu_yaw, 5);
+    Serial.print(", ");
+    Serial.print(status_imu_pitch, 5);
+    Serial.print(", ");
+    Serial.println(status_imu_roll, 5);
+
+    Serial.print("States&Flags: ");
+    const FusionAhrsInternalStates internalStates = FusionAhrsGetInternalStates(&ahrs);
+    float accelerationError = internalStates.accelerationError;
+    bool accelerometerIgnored = internalStates.accelerometerIgnored;
+    float accelerationRecoveryTrigger = internalStates.accelerationRecoveryTrigger;
+    float magneticError = internalStates.magneticError;
+    bool magnetometerIgnored = internalStates.magnetometerIgnored;
+    float magneticRecoveryTrigger = internalStates.magneticRecoveryTrigger;
+
+    Serial.print(accelerationError, 2);
+    Serial.print(", ");
+    Serial.print(accelerometerIgnored, 1);
+    Serial.print(", ");
+    Serial.print(accelerationRecoveryTrigger, 2);
+    Serial.print(", ");
+    Serial.print(magneticError, 2);
+    Serial.print(", ");
+    Serial.print(magnetometerIgnored, 1);
+    Serial.print(", ");
+    Serial.print(magneticRecoveryTrigger, 2);
+    Serial.print(", ");
+
+    const FusionAhrsFlags internalFlags = FusionAhrsGetFlags(&ahrs);
+    bool initialising = internalFlags.initialising;
+    bool angularRateRecovery = internalFlags.angularRateRecovery;
+    bool accelerationRecovery = internalFlags.accelerationRecovery;
+    bool magneticRecovery = internalFlags.magneticRecovery;
+
+    Serial.print(initialising, 1);
+    Serial.print(", ");
+    Serial.print(angularRateRecovery, 1);
+    Serial.print(", ");
+    Serial.print(accelerationRecovery, 1);
+    Serial.print(", ");
+    Serial.println(magneticRecovery, 1);
+
+/*
+    Serial.print("Quaternion: ");
+    Serial.print(status_imu_quat_w, 4);
+    Serial.print(", ");
+    Serial.print(status_imu_quat_x, 4);
+    Serial.print(", ");
+    Serial.print(status_imu_quat_y, 4);
+    Serial.print(", ");
+    Serial.println(status_imu_quat_z, 4);
+    */
+#endif
+}

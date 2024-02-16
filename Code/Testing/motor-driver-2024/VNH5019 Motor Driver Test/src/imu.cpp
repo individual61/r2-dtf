@@ -15,9 +15,9 @@ bool gyr_active = 1;
 
 float status_acc_filt_x, status_acc_filt_y, status_acc_filt_z; // global
 
-SimpleKalmanFilter acc_kalman_filter_x(ACC_KALMAN_MEASUREMENT_UNCERTAINTY, ACC_KALMAN_ESTIMATION_UNCERTAINTY, ACC_KALMAN_PROCESS_NOISE_UNCERTAINTY);
-SimpleKalmanFilter acc_kalman_filter_y(ACC_KALMAN_MEASUREMENT_UNCERTAINTY, ACC_KALMAN_ESTIMATION_UNCERTAINTY, ACC_KALMAN_PROCESS_NOISE_UNCERTAINTY);
-SimpleKalmanFilter acc_kalman_filter_z(ACC_KALMAN_MEASUREMENT_UNCERTAINTY, ACC_KALMAN_ESTIMATION_UNCERTAINTY, ACC_KALMAN_PROCESS_NOISE_UNCERTAINTY);
+//SimpleKalmanFilter acc_kalman_filter_x(ACC_KALMAN_MEASUREMENT_UNCERTAINTY, ACC_KALMAN_ESTIMATION_UNCERTAINTY, ACC_KALMAN_PROCESS_NOISE_UNCERTAINTY);
+//SimpleKalmanFilter acc_kalman_filter_y(ACC_KALMAN_MEASUREMENT_UNCERTAINTY, ACC_KALMAN_ESTIMATION_UNCERTAINTY, ACC_KALMAN_PROCESS_NOISE_UNCERTAINTY);
+//SimpleKalmanFilter acc_kalman_filter_z(ACC_KALMAN_MEASUREMENT_UNCERTAINTY, ACC_KALMAN_ESTIMATION_UNCERTAINTY, ACC_KALMAN_PROCESS_NOISE_UNCERTAINTY);
 
 bool imu_initialize(void)
 {
@@ -56,6 +56,7 @@ bool imu_initialize(void)
     }
 }
 
+/*
 void imu_update_accel_values_filtered(void)
 {
     status_acc_filt_x = acc_kalman_filter_x.updateEstimate(status_acc_x);
@@ -82,6 +83,7 @@ void imu_update_accel_values_filtered(void)
     Serial.println(status_acc_filt_z);
 #endif
 }
+*/
 
 void imu_update_accel_values(void)
 {

@@ -2,9 +2,10 @@
 #define PARAMETERS_H
 
 
-///////////////////////  Board type  ///////////////////////
+///////////////////////////////////////////////////////
+//////////////// BOARD: TYPE: ///////////////////////////
 
-// #define ARDUINO_NANO_33_BLE
+// #define ARDUINO_NANO_33_BLE    --> not sure if I will implement
 #define ARDUINO_NANO_33_BLE_SENSE_REV2
 
 #ifdef ARDUINO_NANO_33_BLE
@@ -15,11 +16,15 @@
 #include <Arduino_BMI270_BMM150.h> // for Arduino Nano BLE 33 Sense Rev 2
 #endif
 
-//////////////////////////////////////////////
+///////////////////////////////////////////////////////
+//////////////// LEDS: /////////////////////////////////
 
 #define LED_RED 22
 #define LED_GREEN 23
 #define LED_BLUE 24
+
+///////////////////////////////////////////////////////
+//////////////// MOTORS: ///////////////////////////////
 
 #define TXU0104_ENABLE 5 // Enable for TXU0104 voltage translator for encoders
 
@@ -43,6 +48,9 @@
 
 #define PWM_FREQUENCY 15000
 
+///////////////////////////////////////////////////////
+//////////////// SERIAL: BINARY: //////////////////////
+
 // Total bytes required for serial send buffer
 
 #define SERIAL_MESSAGE_BUFFER_SIZE_0 28
@@ -57,7 +65,8 @@
 #define SERIAL_HEADER 0x3E // decimal 62 '>'
 #define SERIAL_PAD 0x5F    // decimal 95 '_'
 
-////////////// IMU
+///////////////////////////////////////////////////////
+//////////////// IMU: SELECTION: //////////////////////
 
 //#define FILTER_UPDATE_RATE_HZ 10
 
@@ -69,34 +78,11 @@
 
 #define IMU_FUSION 1
 
-// Timing
-
-#define SERIAL_ASCII_INTERVAL 100
-#define SERIAL_BINARY_INTERVAL 100
-#define ENCODER_INTERVAL 100
-#define IMU_INTERVAL 10
-#define IMU_RATE 100
+#define FUSION_SAMPLE_RATE (100) // replace this with actual sample rate
 
 
-//////////////
-
-#define SERIAL_BINARY 0
-
-#define SERIAL_IMU_MAG_CAL 0
-
-#define SERIAL_IMU_RAW 0
-
-#define SERIAL_IMU_CALIBRATED 0
-
-#define SERIAL_IMU_RAW_VS_CAL 0
-
-#define SERIAL_IMU_RPY 0
-
-#define SERIAL_IMU_RPY_SERIALPLOT 0
-
-#define SERIAL_IMU_RPY_ADAFRUIT_WEBSERIAL 1
-
-#define SERIAL_IMU_CALIBRATED_SERIALPLOT 0
+///////////////////////////////////////////////////////
+//////////////// IMU: CALIBRATION: ////////////////////
 
 #define CAL_GYR_X -0.1991395698f
 #define CAL_GYR_Y 0.1889294647f
@@ -118,5 +104,43 @@
 #define CAL_MAG_31 -0.013f
 #define CAL_MAG_32 -0.003f
 #define CAL_MAG_33 1.012f
+
+///////////////////////////////////////////////////////
+//////////////// TIMING: //////////////////////////////
+
+#define SERIAL_ASCII_INTERVAL 100
+#define SERIAL_BINARY_INTERVAL 100
+#define ENCODER_INTERVAL 100
+#define IMU_INTERVAL 10
+#define IMU_RATE 100
+
+//const double degrees_per_radian = 57.29577; //(180.0 / 3.141592653589793238463)
+
+//const double radians_per_degree = 0.01745329; //( 3.141592653589793238463 / 180.0 )
+
+///////////////////////////////////////////////////////
+//////////////// SERIAL: ASCII: ///////////////////////
+
+#define SERIAL_BINARY 0
+
+#define SERIAL_IMU_MAG_CAL 0
+
+#define SERIAL_IMU_RAW 0
+
+#define SERIAL_IMU_CALIBRATED 0
+
+#define SERIAL_IMU_RAW_VS_CAL 0
+
+#define SERIAL_IMU_RPY 0
+
+#define SERIAL_IMU_RPY_SERIALPLOT 0
+
+#define SERIAL_IMU_RPY_ADAFRUIT_WEBSERIAL 0
+
+#define SERIAL_IMU_RPY_PROCESSING 1
+
+#define SERIAL_IMU_CALIBRATED_SERIALPLOT 0
+
+
 
 #endif
