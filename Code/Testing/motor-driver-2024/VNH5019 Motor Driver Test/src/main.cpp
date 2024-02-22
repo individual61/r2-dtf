@@ -174,21 +174,24 @@ const FusionVector hardIronOffset = {0.0f, 0.0f, 0.0f};
 FusionOffset offset;
 FusionAhrs ahrs;
 
-  // Set AHRS algorithm settings
-  const FusionAhrsSettings settings = {
-      .convention = FusionConventionNwu,
-      .gain = 0.5f,
-      .gyroscopeRange = 2000.0f, /* replace this with actual gyroscope range in degrees/s */
-      .accelerationRejection = 10.0f,
-      .magneticRejection = 10.0f,
-      .recoveryTriggerPeriod = 5 * FUSION_SAMPLE_RATE, /* 5 seconds */
-  };
-
+// Set AHRS algorithm settings
+const FusionAhrsSettings settings = {
+    .convention = FusionConventionNwu,
+    .gain = 0.5f,
+    .gyroscopeRange = 2000.0f, /* replace this with actual gyroscope range in degrees/s */
+    .accelerationRejection = 10.0f,
+    .magneticRejection = 10.0f,
+    .recoveryTriggerPeriod = 5 * FUSION_SAMPLE_RATE, /* 5 seconds */
+};
 
 #endif
 
 ///////////////////////////////////////////////////////
 //////////////// GLOBALS: TIMING //////////////////////
+
+uint32_t time_loop_now = 0;
+uint32_t time_loop_last = 0;
+uint32_t time_loop_interval_ms = 0;
 
 uint32_t time_encoder_1_now = 0;
 uint32_t time_encoder_1_last = 0;
@@ -246,7 +249,6 @@ void setup()
   FusionOffsetInitialise(&offset, FUSION_SAMPLE_RATE);
   FusionAhrsInitialise(&ahrs);
 
-
   FusionAhrsSetSettings(&ahrs, &settings);
 
 #endif
@@ -257,6 +259,12 @@ void setup()
 
 void loop()
 {
+
+  ////////////////////////  LOOP: Loop Timing  ////////////////////////
+
+  time_loop_now = millis();
+  time_loop_interval_ms = time_loop_now - time_loop_last;
+  time_loop_last = time_loop_now;
 
   ////////////////////////  LOOP: IMU  ////////////////////////
 

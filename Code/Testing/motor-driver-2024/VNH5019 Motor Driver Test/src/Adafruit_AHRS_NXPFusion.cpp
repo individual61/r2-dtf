@@ -45,7 +45,7 @@
 
 
 // kalman filter noise variances
-#define FQVA_9DOF_GBY_KALMAN 2E-6F // accelerometer noise g^2 so 1.4mg RMS
+#define FQVA_9DOF_GBY_KALMAN 2.28E-6F // accelerometer noise g^2 so 1.4mg RMS ////////////// CHANGED FROM 2E-6F TO 2.28E-6F for 1.51 mg-rms
 #define FQVM_9DOF_GBY_KALMAN 0.1F  // magnetometer noise uT^2
 #define FQVG_9DOF_GBY_KALMAN 0.3F  // gyro noise (deg/s)^2
 #define FQWB_9DOF_GBY_KALMAN                                                   \

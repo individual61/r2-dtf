@@ -18,11 +18,19 @@ float angRec = 0;
 float accRec = 0;
 float magRec = 0;
 
+float gain = 0.0;
+int convention = 0;
+float accelerationRejection = 0.0;
+float magneticRejection = 0.0;
+int recoveryTriggerPeriod = 0;
+
+float time_loop_interval_ms = 0;
+
 PFont f;
 
 void setup()
 {
-  size(600, 800, P3D);
+  size(600, 920, P3D);
 
   f = createFont("Arial", 20, true); // STEP 2 Create Font
 
@@ -125,10 +133,33 @@ void draw()
   text("initializing:", text_start_left + float_width, text_start_top + 3 * float_height);
   text(String.format("%.2f", initializing), text_start_left + 3 * float_width, text_start_top + 3 * float_height);
 
+  text("Loop Time:", text_start_left + float_width, text_start_top + 7 * float_height);
+  text(String.format("%.2f", time_loop_interval_ms), text_start_left + 3 * float_width, text_start_top + 7 * float_height);
 
+  text_start_top =  text_start_top + 4 * float_height;
+  text_start_left = -100.0;
 
+  text("Gain:", -150, text_start_top);
+  text(String.format("%.2f", gain), text_start_left, text_start_top);
+  text_start_top = text_start_top + float_height;
+  text("Convention:", -150, text_start_top);
+  text(String.format("%.0f", float(convention)), text_start_left, text_start_top );
+  text_start_top = text_start_top + float_height;
+  text("Acc Rej:", -150, text_start_top);
+  text(String.format("%.2f", accelerationRejection), text_start_left, text_start_top );
+  text_start_top = text_start_top + float_height;
+  text("Mag Rej:", -150, text_start_top);
+  text(String.format("%.2f", magneticRejection), text_start_left, text_start_top );
+  text_start_top = text_start_top + float_height;
+  text("Rec Trig Prd:", -150, text_start_top);
+  text(String.format("%.0f", float(recoveryTriggerPeriod)), text_start_left, text_start_top );
+  /*
 
-
+   float gain = float(gain_str);
+   int convention = int(convention_str);
+   float accelerationRejection = float(accelerationRejection_str);
+   float magneticRejection = float(magneticRejection_str);
+   int recoveryTriggerPeriod = int(recoveryTriggerPeriod_str);*/
 
 
 
@@ -159,7 +190,7 @@ void serialEvent()
 
       if (list.length >= 4 && list[0].equals("Orientation:"))
       {
-        
+
         String yawstring = list[1].substring(0, list[1].length() - 1);
         String pitchstring = list[2].substring(0, list[2].length() - 1);
         String rollstring = list[3].substring(0, list[3].length() - 1);
@@ -167,9 +198,9 @@ void serialEvent()
         pitch = float(pitchstring); // convert to float pitch
         roll = float(rollstring); // convert to float roll
       }
-      if (list.length >= 11 && list[0].equals("States&Flags:"))
+      if (list.length >= 12 && list[0].equals("States&Flags:"))
       {
-        
+
         String accErr_str = list[1].substring(0, list[1].length() - 1);
         String accIgnored_str = list[2].substring(0, list[2].length() - 1);
         String accRecTrig_str = list[3].substring(0, list[3].length() - 1);
@@ -180,8 +211,8 @@ void serialEvent()
         String initializing_str = list[7].substring(0, list[7].length() - 1);
         String angRec_str = list[8].substring(0, list[8].length() - 1);
         String accRec_str = list[9].substring(0, list[9].length() - 1);
-        String magRec_str = list[10];//.substring(0, list[10].length() - 1);
-
+        String magRec_str = list[10].substring(0, list[10].length() - 1);
+        String time_loop_interval_ms_str = list[11];
 
         print("Acc Err: ");
         print(accErr_str);
@@ -202,7 +233,10 @@ void serialEvent()
         print("\tMag Rec: ");
         print(magRec_str);
         print("\tInitializing: ");
-        println(initializing_str);
+        print(initializing_str);
+        print("\tLoop Time ms: ");
+        println(time_loop_interval_ms_str);
+
 
 
         accErr = float(accErr_str);
@@ -216,6 +250,32 @@ void serialEvent()
         angRec = float(angRec_str);
         accRec = float(accRec_str);
         magRec = float(magRec_str);
+        time_loop_interval_ms =  float(time_loop_interval_ms_str);
+      }
+      if (list.length >= 6 && list[0].equals("Settings:"))
+      {
+        String gain_str = list[1].substring(0, list[1].length() - 1);
+        String convention_str = list[2].substring(0, list[2].length() - 1);
+        String accelerationRejection_str = list[3].substring(0, list[3].length() - 1);
+        String magneticRejection_str = list[4].substring(0, list[4].length() - 1);
+        String recoveryTriggerPeriod_str = list[5];
+
+        gain = float(gain_str);
+        convention = int(convention_str);
+        accelerationRejection = float(accelerationRejection_str);
+        magneticRejection = float(magneticRejection_str);
+        recoveryTriggerPeriod = int(recoveryTriggerPeriod_str);
+
+        print("Gain: ");
+        print(gain);
+        print("\tConv: ");
+        print(convention);
+        print("\tAccRej: ");
+        print(nf(accelerationRejection, 0, 2));
+        print("\tMagRej: ");
+        print(nf(magneticRejection, 0, 2));
+        print("\tRecTrig Period: ");
+        println(recoveryTriggerPeriod);
       }
     }
   } while (message != null);

@@ -180,6 +180,22 @@ void readSerialData()
         {
             status_flag_unknown_message = false;
         }
+        /*    else if (!strcmp(receivedCommand, "FGAIN")) //
+            {
+                status_flag_unknown_message = false;
+            }
+
+            const FusionAhrsSettings settings = {
+                .convention = FusionConventionNwu,
+                .gain = 0.5f,
+                .gyroscopeRange = 2000.0f, /* replace this with actual gyroscope range in degrees/s
+                .accelerationRejection = 10.0f,
+                .magneticRejection = 10.0f,
+                .recoveryTriggerPeriod = 5 * FUSION_SAMPLE_RATE, /* 5 seconds
+            };
+
+            FusionAhrsSetSettings(&ahrs, &settings);
+    */
         /*else if (!strcmp(receivedCommand, "X"))
         {
           //
@@ -624,7 +640,27 @@ void sendSerial_ascii()
     Serial.print(", ");
     Serial.print(accelerationRecovery, 1);
     Serial.print(", ");
-    Serial.println(magneticRecovery, 1);
+    Serial.print(magneticRecovery, 1);
+    Serial.print(", ");
+    Serial.println(time_loop_interval_ms, 1);
+
+    Serial.print("Settings: ");
+
+    Serial.print(ahrs.settings.gain, 1);
+    Serial.print(", ");
+    Serial.print(ahrs.settings.convention, 1);
+    Serial.print(", ");
+    float accelerationRejection = FusionRadiansToDegrees((2.0*sqrt(ahrs.settings.accelerationRejection)));
+    Serial.print(accelerationRejection, 2);
+    Serial.print(", ");
+    float magneticRejection = FusionRadiansToDegrees((2.0*sqrt(ahrs.settings.magneticRejection)));
+    Serial.print(magneticRejection, 2);
+    Serial.print(", ");
+    Serial.println(ahrs.settings.recoveryTriggerPeriod, 1);
+
+
+
+
 
 /*
     Serial.print("Quaternion: ");

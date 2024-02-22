@@ -261,6 +261,8 @@ extern uint32_t time_send_binary_last;
 extern uint32_t time_send_ascii_now;
 extern uint32_t time_send_ascii_last;
 
+extern uint32_t time_loop_interval_ms;
+
 ///////////////////////////////////////////////////////
 //////////////// LEDS: //////////////////////////////
 
