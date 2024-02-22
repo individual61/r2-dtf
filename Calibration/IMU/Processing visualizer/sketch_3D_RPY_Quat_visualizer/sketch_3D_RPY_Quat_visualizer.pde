@@ -185,7 +185,13 @@ void serialEvent()
     message = myPort.readStringUntil(newLine); // read from port until new line
     if (message != null) {
 
+      if (!(message.contains("Settings")||message.contains("States")||message.contains("Orientation")))
+      {
+        println(trim(message.replace("\n", "").replace("\r", "")).toCharArray());
+      }
+
       String[] list = split(trim(message), " ");
+
 
 
       if (list.length >= 4 && list[0].equals("Orientation:"))
@@ -214,28 +220,29 @@ void serialEvent()
         String magRec_str = list[10].substring(0, list[10].length() - 1);
         String time_loop_interval_ms_str = list[11];
 
+        /*
         print("Acc Err: ");
-        print(accErr_str);
-        print("\tAcc Ignored: ");
-        print(accIgnored_str);
-        print("\tAcc Rec Trig: ");
-        print(accRecTrig_str);
-        print("\tMag Err: ");
-        print(magErr_str);
-        print("\tMag Ignored: ");
-        print(magIgnored_str);
-        print("\tMag Rec Trig: ");
-        print(magRecTrig_str);
-        print("\tAng Rec: ");
-        print(angRec_str);
-        print("\tAcc Rec: ");
-        print(accRec_str);
-        print("\tMag Rec: ");
-        print(magRec_str);
-        print("\tInitializing: ");
-        print(initializing_str);
-        print("\tLoop Time ms: ");
-        println(time_loop_interval_ms_str);
+         print(accErr_str);
+         print("\tAcc Ignored: ");
+         print(accIgnored_str);
+         print("\tAcc Rec Trig: ");
+         print(accRecTrig_str);
+         print("\tMag Err: ");
+         print(magErr_str);
+         print("\tMag Ignored: ");
+         print(magIgnored_str);
+         print("\tMag Rec Trig: ");
+         print(magRecTrig_str);
+         print("\tAng Rec: ");
+         print(angRec_str);
+         print("\tAcc Rec: ");
+         print(accRec_str);
+         print("\tMag Rec: ");
+         print(magRec_str);
+         print("\tInitializing: ");
+         print(initializing_str);
+         print("\tLoop Time ms: ");
+         println(time_loop_interval_ms_str);*/
 
 
 
@@ -265,17 +272,18 @@ void serialEvent()
         accelerationRejection = float(accelerationRejection_str);
         magneticRejection = float(magneticRejection_str);
         recoveryTriggerPeriod = int(recoveryTriggerPeriod_str);
-
+        /*
         print("Gain: ");
-        print(gain);
-        print("\tConv: ");
-        print(convention);
-        print("\tAccRej: ");
-        print(nf(accelerationRejection, 0, 2));
-        print("\tMagRej: ");
-        print(nf(magneticRejection, 0, 2));
-        print("\tRecTrig Period: ");
-        println(recoveryTriggerPeriod);
+         print(gain);
+         print("\tConv: ");
+         print(convention);
+         print("\tAccRej: ");
+         print(nf(accelerationRejection, 0, 2));
+         print("\tMagRej: ");
+         print(nf(magneticRejection, 0, 2));
+         print("\tRecTrig Period: ");
+         println(recoveryTriggerPeriod);
+         */
       }
     }
   } while (message != null);
@@ -318,7 +326,7 @@ void keyPressed() {
     if (inputString.length() > 0) {
       inputString = inputString.substring(0, inputString.length() - 1);
     }
-  } else {
+  } else if ( key != SHIFT){
     // Add the character to the input string
     inputString += key;
   }

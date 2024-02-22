@@ -23,6 +23,7 @@ void readSerialData()
     while (Serial.available() > 0 && serial_receive_newData == false)
     {
         serial_receive_char = Serial.read();
+        Serial.println(serial_receive_char);
 
         if (serial_receive_recvInProgress == true)
         {
@@ -52,6 +53,9 @@ void readSerialData()
 
     if (serial_receive_newData == true)
     {
+
+        
+
         strcpy(tempChars, receivedChars);
         // this temporary copy is necessary to protect the original data
         //   because strtok() used in parseData() replaces the commas with \0
@@ -78,6 +82,8 @@ void readSerialData()
         char receivedCommand[20]; // Adjust the size as needed
         strcpy(receivedCommand, serial_receive_message);
         strupr(receivedCommand); // Convert to lowercase (use strupr for uppercase)
+
+        
 
         if (!strcmp(receivedCommand, "M1A")) // Motor 1 INA only
         {
@@ -180,25 +186,45 @@ void readSerialData()
         {
             status_flag_unknown_message = false;
         }
-        /*    else if (!strcmp(receivedCommand, "FGAIN")) //
+        else if (!strcmp(receivedCommand, "FCONV")) //
+        {
+            if (integerFromPC == 0)
             {
-                status_flag_unknown_message = false;
+                ahrs.settings.convention = FusionConventionNwu;
             }
-
-            const FusionAhrsSettings settings = {
-                .convention = FusionConventionNwu,
-                .gain = 0.5f,
-                .gyroscopeRange = 2000.0f, /* replace this with actual gyroscope range in degrees/s
-                .accelerationRejection = 10.0f,
-                .magneticRejection = 10.0f,
-                .recoveryTriggerPeriod = 5 * FUSION_SAMPLE_RATE, /* 5 seconds
-            };
-
-            FusionAhrsSetSettings(&ahrs, &settings);
-    */
+            else if (integerFromPC == 1)
+            {
+                ahrs.settings.convention = FusionConventionEnu;
+            }
+            else if (integerFromPC == 2)
+            {
+                ahrs.settings.convention = FusionConventionNed;
+            }
+        }
+        else if (!strcmp(receivedCommand, "FGAIN")) //
+        {
+            ahrs.settings.gain = floatFromPC;
+            // digitalWrite(LED_RED, LOW);
+        }
+        else if (!strcmp(receivedCommand, "FAREJ")) //
+        {
+            ahrs.settings.accelerationRejection = floatFromPC;
+        }
+        else if (!strcmp(receivedCommand, "FMREJ")) //
+        {
+            ahrs.settings.magneticRejection = floatFromPC;
+        }
+        else if (!strcmp(receivedCommand, "FRTRG")) //
+        {
+            ahrs.settings.recoveryTriggerPeriod = int(floatFromPC);
+        }
+        else if (!strcmp(receivedCommand, "FRST")) //
+        {
+            FusionAhrsReset(&ahrs);
+        }
         /*else if (!strcmp(receivedCommand, "X"))
         {
-          //
+          // FusionAhrsReset(ahrs);
         }
         */
         else
@@ -650,17 +676,13 @@ void sendSerial_ascii()
     Serial.print(", ");
     Serial.print(ahrs.settings.convention, 1);
     Serial.print(", ");
-    float accelerationRejection = FusionRadiansToDegrees((2.0*sqrt(ahrs.settings.accelerationRejection)));
+    float accelerationRejection = FusionRadiansToDegrees((2.0 * sqrt(ahrs.settings.accelerationRejection)));
     Serial.print(accelerationRejection, 2);
     Serial.print(", ");
-    float magneticRejection = FusionRadiansToDegrees((2.0*sqrt(ahrs.settings.magneticRejection)));
+    float magneticRejection = FusionRadiansToDegrees((2.0 * sqrt(ahrs.settings.magneticRejection)));
     Serial.print(magneticRejection, 2);
     Serial.print(", ");
     Serial.println(ahrs.settings.recoveryTriggerPeriod, 1);
-
-
-
-
 
 /*
     Serial.print("Quaternion: ");
